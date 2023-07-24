@@ -1,0 +1,8 @@
+sis_habilitado,nombre_item,nombre_cuenta,id_cuenta_contable
+A,Inscripción,bancos1,1
+A,Cuota administrativa,bancos2,2
+A,Capital suscriptor,bancos3,3
+A,Dispositivo,bancos1,1
+A,Rastreo,bancos1,1
+A,Oferta,bancos1,1
+A,Cargo adjudicación,bancos1,1

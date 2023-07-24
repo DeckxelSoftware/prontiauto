@@ -1,0 +1,103 @@
+package com.ec.prontiauto.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ec.prontiauto.abstracts.AbstractController;
+import com.ec.prontiauto.abstracts.GenericMethods;
+import com.ec.prontiauto.dao.PeriodoLaboralRequestDao;
+import com.ec.prontiauto.dao.PeriodoLaboralResponseDao;
+import com.ec.prontiauto.entidad.PeriodoLaboral;
+import com.ec.prontiauto.exception.ExceptionResponse;
+import com.ec.prontiauto.mapper.PeriodoLaboralMapper;
+import com.ec.prontiauto.repositoryImpl.PeriodoLaboralRepositoryImpl;
+
+import io.swagger.annotations.Api;
+
+@RestController
+@RequestMapping("/api/periodo-laboral")
+// @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST
+// })
+@Api(tags = "Periodo Laboral", description = "Gestion de Periodo Laboral")
+@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
+public class PeriodoLaboralController extends
+		AbstractController<PeriodoLaboral, PeriodoLaboralRequestDao, PeriodoLaboralResponseDao, Integer> {
+
+	private GenericMethods genericMethods = new GenericMethods();
+
+	@Autowired
+	private PeriodoLaboralRepositoryImpl grupoContableRepositoryImpl;
+	@PersistenceContext
+	private EntityManager entityManager;
+
+	@Override
+	public PeriodoLaboralResponseDao devolverRespuestaDao(PeriodoLaboral entity) {
+		return PeriodoLaboralMapper.setEntityToDaoResponse.apply(entity);
+	}
+
+	@Override
+	@Transactional
+	public PeriodoLaboral devolverRespuestaUpdate(PeriodoLaboral entity, Integer id) {
+		PeriodoLaboral antiguo = (PeriodoLaboral) genericMethods.findById("PeriodoLaboral",
+				entityManager, id);
+		if (antiguo != null) {
+			antiguo = antiguo.setValoresDiferentes(antiguo, entity);
+		}
+		return antiguo;
+	}
+
+	@Override
+	public PeriodoLaboral setDaoRequestToEntity(PeriodoLaboralRequestDao dao) {
+		return PeriodoLaboralMapper.setDaoRequestToEntity.apply(dao);
+	}
+
+	@RequestMapping(value = "", method = RequestMethod.GET)
+	public ResponseEntity<?> findBySearchAndUpdate(String busqueda,
+			String sisHabilitado,
+			String activo,
+			Integer skip,
+			Integer take,
+			String sortField,
+			Boolean sortAscending) {
+		final HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+		try {
+			Map<String, Object> params = new HashMap<>();
+			params.put("busqueda", busqueda == null ? "" : busqueda);
+			params.put("sisHabilitado", sisHabilitado == null ? "" : sisHabilitado);
+			params.put("activo", activo == null ? "" : activo);
+			String sortFieldDefault = "id";
+			sortField = sortField == null ? sortFieldDefault : sortField;
+			sortAscending = sortAscending == null ? true : sortAscending;
+
+			List<Object> list = this.findWithSkipAndTake(
+					this.grupoContableRepositoryImpl,
+					params,
+					skip,
+					take,
+					sortField,
+					sortAscending);
+
+			return new ResponseEntity<>(list, httpHeaders, HttpStatus.OK);
+		} catch (Exception e) {
+			httpHeaders.add("STATUS", "400");
+			return new ResponseEntity<ExceptionResponse>(new ExceptionResponse("400", e.getMessage()), httpHeaders,
+					HttpStatus.BAD_REQUEST);
+		}
+	}
+}

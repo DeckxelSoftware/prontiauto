@@ -1,0 +1,9 @@
+sis_habilitado,codigo_auxiliar ,nombre,nombre_auxiliar_uno,nombre_auxiliar_dos,unidad,calcula_iess,calcula_renta,calcula_dec_tercero,calcula_dec_cuarto,calcula_f_reserva,calcula_vacaciones,se_suma
+A,AE,Multas,Multas,Multas,V,N,N,N,N,N,N,N
+A,AE,Otros descuentos,Otros ,descuentos,V,N,N,N,N,N,N,N
+A,AE,Consumo celular,Consumo ,celular,V,N,N,N,N,N,N,N
+A,AE,Permiso Horas ,Permiso,Horas,H,N,N,N,N,N,N,N
+A,AI,Horas extra 50,Horas ,extra 50,H,S,S,S,N,S,S,N
+A,AI,Horas extra 100,Horas ,extra 100,H,S,S,S,N,S,S,N
+A,AI,Retroactivo ,Retro,activo,V,S,S,S,N,S,S,N
+A,AI,Otros Ingresos ,Otros ,Ingresos,V,N,S,N,N,N,N,N

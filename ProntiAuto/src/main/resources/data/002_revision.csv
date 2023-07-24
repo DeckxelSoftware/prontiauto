@@ -1,0 +1,5 @@
+calificacion,compresion_motor,caja,observaciones,fecha_firma_aprobacion,id_articulo
+9,125 psi,en buen estado,vehiculo en buen estado,2022-05-15,1
+4,126 psi,en buen estado,fallos en el chasis,2022-05-16,2
+10,127 psi,en buen estado,ninguno,2022-05-17,3
+10,158 psi,en buen estado,ninguno,2022-05-18,4

@@ -1,0 +1,11 @@
+sis_habilitado,numero_cuenta,tipo_cuenta,id_banco,id_empresa,id_informacion_financiera
+A,11,ahorros,1,1,1
+I,23,corriente,2,3,1
+A,35,ahorros,2,6,1
+I,47,corriente,2,7,1
+A,59,ahorros,1,8,1
+I,71,corriente,1,9,1
+A,83,ahorros,2,10,1
+I,95,corriente,1,1,1
+A,107,ahorros,2,2,1
+I,119,corriente,1,4,1

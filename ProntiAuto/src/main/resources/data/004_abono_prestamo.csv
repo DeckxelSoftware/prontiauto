@@ -1,0 +1,9 @@
+sis_habilitado,fecha_pago,numero_pago,modalidad_descuento,mes,anio,valor_cuota,valor_capital,valor_tasa_interes,esta_pagado,id_prestamo
+A,2022-02-24,1,nuevo,ENE,2018,12,12,12,C,1
+I,2022-02-24,2,nuevo,FEB,2018,12,12,12,P,2
+A,2022-02-25,3,nuevo,DIC,2018,12,12,12,C,3
+I,2022-02-26,4,nuevo,ENE,2021,12,12,12,P,4
+A,2022-02-25,5,nuevo,JUN,2022,12,12,12,C,5
+A,2022-02-25,5,nuevo,JUL,2022,12,12,12,C,6
+A,2022-02-25,5,nuevo,AGO,2022,12,12,12,P,7
+A,2022-02-25,5,nuevo,AGO,2022,12,12,12,P,7

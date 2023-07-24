@@ -1,0 +1,7 @@
+sis_habilitado,agente_retencion,clase_contribuyente,contacto_referencia,nombre_persona_referencia,obligado_llevar_contabilidad,tipo_cuenta_contable,tipo_proveedor,id_empresa,id_usuario
+A,N,General,Andres,Carla,S,gastos telefonía,N,1,1
+I,N,Rimpe,Rafael,Joselyn,S,gastos 2,N,2,5
+I,N,Especial,Adrian,Jhon,N,gastos 3,E,3,2
+A,S,General,Juan,Pedro,N,gastos 4,E,4,3
+I,S,General,Carlos,Oscar,N,gastos 5,P,5,4
+I,S,Rimpe,Roberto,Mishell,N,gastos 6,P,20,6

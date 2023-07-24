@@ -1,0 +1,6 @@
+sis_habilitado,comprobante_pago,dias_tomados,esta_pagado,fecha_desde,fecha_hasta,fecha_pago,nombre_apellido_responsable,numero_solicitud,valor_pagado,valor_tomado,id_cargo_vacacion
+A,12,6,S,2022-02-15T14:59:55.711Z,2022-03-16T14:59:55.711Z,2022-03-06T14:59:55.711Z,Juan Perez,2,199.98,86.32,1
+I,123,7,N,2022-03-16T14:59:55.711Z,2022-05-21T14:59:55.711Z,2022-05-061T14:59:55.711Z,Pancho Cevallos,3,235.12,127.98,2
+A,543,8,S,2022-04-17T14:59:55.711Z,2022-07-11T14:59:55.711Z,2022-07-21T14:59:55.711Z,Antonio Valencia,4,320.67,210.21,3
+I,92,9,N,2022-05-18T14:59:55.711Z,2022-09-28T14:59:55.711Z,2022-10-28T14:59:55.711Z,Alex Aguinaga,5,96.54,431.76,4
+A,431,10,S,2022-07-19T14:59:55.711Z,2022-12-23T14:59:55.711Z,2022-12-24T14:59:55.711Z,Gonzalo Plata,6,212.32,219.65,5

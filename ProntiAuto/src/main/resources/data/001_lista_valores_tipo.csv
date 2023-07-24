@@ -1,0 +1,30 @@
+sis_habilitado,codigo_primario,codigo_secundario,descripcion,nombre
+A,GL1,GL1,descripcion 12,Genero de libro 
+I,LN1,LN1,Lugar de nacimiento de los usuarios,lugar Nacimiento
+A,TMC1,TMC1,Tipo del medio decontacto  de los usuarios,Tipo Medio Contacto
+A,CA1,CA1,Ciudad donde laboran las agencias,Ciudad Agencia
+A,TD1,TD1,Tipo del documento de identidad del usuario,Tipo Documento Identidad
+I,PU1,PU1,País donde vive el usuario,Pais Usuario
+A,PVU1,PVU1,Provincia donde vive el usuario,Provincia Usuario
+A,CU1,CU1,Ciudad donde vive el usuario,Ciudad Usuario
+A,MC1,MC1,Modalidad de contrato de los trabajadores ,Modalidad de Contrato 
+I,TE1,TE1,Tipo de empresa ,Tipo Empresa
+A,TCB1,TCB1,Tipo de cuenta bancaria ,Tipo Cuenta Bancaria
+A,MAA1,MAA1,Marca de los articulos con los que cuenta la empresa ,Marca Articulo 
+A,MOA1,MOA1,Módelo de los articulos con los que cuenta la empresa ,Modelo Artículo
+I,COA1,COA1,Color del artículo con los que cuenta la empresa ,Color Artículo
+A,CONS1,CONS1,Configuraciones del sistema ,Configuracipon del Sistema 
+A,CLC1,CLC1,La clase de contribuyente a la que pertenece la empresa ,Clase Contribuyente 
+A,TCC1,TCC1,Tipo de cuenta contable a la que pertenece un proveedor ,Tipo de Cuenta Contable 
+A,EC1,EC1,Estados civiles,Estado Civil
+A,GS1,GS1,Tipos de sangre,Grupo Sanguineo
+A,NET1,NET1,Nivel de estudios,Nivel de Estudios
+A,PRT1,PRT1,Profesion,Profesion
+A,CDS1,CDS1,Codigo sectorial,Codigo Serctorial
+A,PT1,PT1,Parentesco,Parentesco
+A,TDC1,TDC1,Tipo de discapacidad,Tipo de discapacidad
+A,TCE1,TCE1,Tipo de contrato,Tipo de contrato
+A,UBF1,UBF1,Ubicacion fisica,Ubicacion fisica
+A,TPE1,TPE1,Tipo de préstamo,Tipo de préstamo
+A,TDD1,TDD1,Tipo de documento,Tipo de documento
+A,MST1,MST1,Motivo de salida ,Motivo de salida

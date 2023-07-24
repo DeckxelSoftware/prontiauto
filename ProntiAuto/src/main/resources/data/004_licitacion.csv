@@ -1,0 +1,6 @@
+sis_habilitado,aprobado_por_gerencia,estado,fecha_oferta,observacion,plan_seleccionado,porcentaje_oferta,precio_plan,total_monto_cobrado,valor_oferta,id_contrato
+A,S,SIA,2020-07-11T14:59:55.711Z,No cumple con cuotas,plan auto,12.32,6000,6000,4123,1
+I,N,NOA,2022-09-01T14:59:55.711Z,No presenta documentos,plan moto,34,7643,7643,5467,2
+A,S,APG,2021-02-13T14:59:55.711Z,No realiza gestion,plan moto,23.31,5433,5433,2156,3
+I,N,SIA,2020-04-24T14:59:55.711Z,No cumpleo con cuotas,plan auto,67,2335,2335,1087,4
+A,S,APG,2020-10-29T14:59:55.711Z,No a�ade campos,plan moto,43.76,6478,6478,3257,5

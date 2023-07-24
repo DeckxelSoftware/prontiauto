@@ -1,0 +1,11 @@
+sis_habilitado,placa,chasis,marca,modelo,anio,color,observacion,estado,ubicacion_fisica
+A,placa 2234,chasis 863,marca 5,modelo 984,2010,blanco,observacion 1,F,Patio Matriz
+A,placa 2435,chasis 894,marca 15,modelo 985,2011,negro,observacion 2,C,Sucursal Loja
+I,placa 2636,chasis 925,marca 25,modelo 986,2012,rojo,observacion 3,E,Patio Matriz
+A,placa 2837,chasis 956,marca 35,modelo 987,2013,azul,observacion 4,E,Sucursal Cuenca
+A,placa 3038,chasis 987,marca 45,modelo 988,2014,blanco,observacion 5,C,Patio Matriz
+I,placa 3239,chasis 1018,marca 55,modelo 989,2015,negro,observacion 6,F,Sucursal Loja
+A,placa 3440,chasis 1049,marca 65,modelo 990,2016,rojo,observacion 7,F,Sucursal Ambato
+A,placa 3641,chasis 1080,marca 75,modelo 991,2017,azul,observacion 8,C,Patio Matriz
+I,placa 3842,chasis 1111,marca 85,modelo 992,2018,blanco,observacion 9,E,Sucursal Cuenca
+A,placa 4043,chasis 1142,marca 95,modelo 993,2019,negro,observacion 10,E,Sucursal Loja

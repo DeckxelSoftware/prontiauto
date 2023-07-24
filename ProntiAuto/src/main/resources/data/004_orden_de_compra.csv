@@ -1,0 +1,4 @@
+sis_habilitado,anio,beneficiario_cheque,chasis,color,correo,documento_identidad,fecha_carta_oferta,fecha_inicio,fecha_registro_oferta,marca,modelo,motor,nombre_cliente,numero_orden_contrato,observacion,placa,telefono,tipo_documento_identidad,tipo_vehiculo,valor_sin_iva,valor_total,id_articulo,id_contrato,id_proveedor
+A,2022,Juan,UDSH72H,Rojo,correo@example.com,1702345678,2022-05-13,2022-05-14,2022-05-15,Nissan,versa,8V,Juan,1205,ninguna,GVH-4565,0996751234,cedula,Usado,2.15,20.34,1,1,1
+I,2023,Rodolfo,HIRO84D,verde,,1032345678,2022-05-14,2022-05-15,2022-05-16,Chevrolet,onix,4G,Carlos,1206,ninguna,IMB-0386,0994562785,pasaporte,Nuevo,3.12,45.49,1,2,2
+I,2024,Andres,CAUD45U,azul,correo1@example.com,1493457623,2022-05-15,2022-05-16,2022-05-17,Kia,soul,7J,Abigail,1207,ninguna,CAR-4590,0994563457,cedula,Nuevo,5.14,60.46,2,2,2

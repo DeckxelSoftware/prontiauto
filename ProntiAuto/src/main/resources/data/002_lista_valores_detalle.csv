@@ -1,0 +1,124 @@
+sis_habilitado,codigo_primario,codigo_secundario,descripcion,nombre,id_lista_valores_tipo
+A,CA1-1,CA1-1,Quito,Quito,4
+A,CA1-2,CA1-2,Guayaquil,Guayaquil,4
+A,CA1-3,CA1-3,Riobamba,Riobamba,4
+A,TD1-1,TD1-1,Cedula,Cedula,5
+A,TD1-2,TD1-2,Pasaporte,Pasaporte,5
+A,TD1-3,TD1-3,RUC,RUC,5
+A,MC1-1,MC1-1,Modalidad de contratos de servicios,Servicios ,9
+A,MC1-2,MC1-2,Modalidad de contrato por nomina CDE ,Nomina CDE,9
+A,MC1-3,MC1-3,Modalidad de contrato por nomina PRONTI,Nomina pronti ,9
+A,TCB1-1,TCB1-1,Cuenta Corriente,Corriente,11
+A,TCB1-2,TCB1-2,Cuenta de ahorros,Ahorros,11
+A,PVU1-1,PVU1-1,Azuay,Azuay,7
+A,PVU1-2,PVU1-2,Bolivar,Bolivar,7
+A,PVU1-3,PVU1-3,Cañar,Cañar,7
+A,PVU1-4,PVU1-4,Carchi,Carchi,7
+A,PVU1-5,PVU1-5,Chimborazo,Chimborazo,7
+A,PVU1-6,PVU1-6,Cotopaxi,Cotopaxi,7
+A,PVU1-7,PVU1-7,El Oro,El Oro,7
+A,PVU1-8,PVU1-8,Esmeraldas,Esmeraldas,7
+A,PVU1-9,PVU1-9,Galápagos,Galápagos,7
+A,PVU1-10,PVU1-10,Guayanas,Guayanas,7
+A,PVU1-11,PVU1-11,Imbabura,Imbabura,7
+A,PVU1-12,PVU1-12,Loja,Loja,7
+A,PVU1-13,PVU1-13,Los Ríos,Los Ríos,7
+A,PVU1-14,PVU1-14,Manabí,Manabí,7
+A,PVU1-15,PVU1-15,Morona Santiago,Morona Santiago,7
+A,PVU1-16,PVU1-16,Napo,Napo,7
+A,PVU1-17,PVU1-17,Sucumbíos,Sucumbíos,7
+A,PVU1-18,PVU1-18,Pastaza,Pastaza,7
+A,PVU1-19,PVU1-19,Pinchincha,Pinchincha,7
+A,PVU1-20,PVU1-20,Santa Elena,Santa Elena,7
+A,PVU1-21,PVU1-21,Santo Domingo,Santo Domingo,7
+A,PVU1-22,PVU1-22,Francisco De Orellana,Francisco De Orellana,7
+A,PVU1-23,PVU1-23,Tungurahua,Tungurahua,7
+A,PVU1-24,PVU1-24,Zamora Chinchipe,Zamora Chinchipe,7
+A,CU1-1,CU1-1,Cuenca,Cuenca,8
+A,CU1-2,CU1-2,Gualaceo,Gualaceo,8
+A,CU1-3,CU1-3,Paute,Paute,8
+A,CU1-4,CU1-4,Sigsig,Sigsig,8
+A,CU1-5,CU1-5,Girón,Girón,8
+A,CU1-6,CU1-6,San Fernando,San Fernando,8
+A,CU1-7,CU1-7,Santa Isabel,Santa Isabel,8
+A,CU1-8,CU1-8,Pucará,Pucará,8
+A,CU1-9,CU1-9,Nabón,Nabón,8
+A,CU1-10,CU1-10,Isabela,Isabela,8
+A,CU1-11,CU1-11,Santa Cruz,Santa Cruz,8
+A,CU1-12,CU1-12,Puerto Baquerizo Moreno,Puerto Baquerizo Moreno,8
+A,CU1-13,CU1-13,Puerto Ayora,Puerto Ayora,8
+A,CU1-14,CU1-14,Cañar,Cañar,8
+A,CU1-15,CU1-15,Biblián,Biblián,8
+A,CU1-16,CU1-16,Azogue,Azogue,8
+A,CU1-17,CU1-17,La Troncal,La Troncal,8
+A,CU1-18,CU1-18,Guayaquil,Guayaquil,8
+A,CU1-19,CU1-19,Daule,Daule,8
+A,CU1-20,CU1-20,Duran,Duran,8
+A,CU1-21,CU1-21,El Empalme,El Empalme,8
+A,CU1-22,CU1-22,Santa Elena,Santa Elena,8
+A,CU1-23,CU1-23,La Libertad,La Libertad,8
+A,CU1-24,CU1-24,Salinas,Salinas,8
+A,TE1-1,TE1-1,CA,CA,10
+A,TE1-2,TE1-2,SA,SA,10
+A,TE1-3,TE1-3,SAS,SAS,10
+A,TE1-4,TE1-4,LTDA,LTDA,10
+A,TE1-5,TE1-5,CIA LTDA,CIA LTDA,10
+A,MAA1-1,MAA1-1,Audi,Audi,12
+A,MAA1-2,MAA1-2,BMW,BMW,12
+A,MAA1-3,MAA1-3,Bugati,Bugati,12
+A,MAA1-4,MAA1-4,Chevrolet,Chevrolet,12
+A,MAA1-5,MAA1-5,Ferrari,Ferrari,12
+A,MOA1-1,MOA1-1,A1,A2,13
+A,MOA1-2,MOA1-2,X6,X7,13
+A,MOA1-3,MOA1-3,Divo,Divo,13
+A,MOA1-4,MOA1-4,Aveo,Aveo,13
+A,MOA1-5,MOA1-5,F8 Tributo,F8 Tributo,13
+A,COA1-1,COA1-2,Rojo,Rojo,14
+A,COA1-2,COA1-3,Azul,Azul,14
+A,COA1-3,COA1-4,Blanco,Blanco,14
+A,COA1-4,COA1-5,Negro,Negro,14
+A,COA1-5,COA1-6,Plateado,Plateado,14
+A,TCC1-1,TCC1-1,Gastos telefonia,Gastos telefonia,17
+A,CLC1-1,CLC1-1,Clase contribuyente,General,16
+A,CLC1-2,CLC1-2,Clase contribuyente,RIMPE,16
+A,CLC1-3,CLC1-3,Clase contribuyente,Especial,16
+A,PU1-1,PU1-1,Pais usuario,Ecuador,6
+A,TMC1-1,TMC1-1,Tipo de medio de contacto,Telefono,3
+A,TMC1-2,TMC1-2,Tipo de medio de contacto,Correo,3
+A,EC1-1,EC1-1,Soltero,Soltero,18
+A,EC1-2,EC1-2,Casado,Casado,18
+A,EC1-3,EC1-3,Viudo,Viudo,18
+A,EC1-4,EC1-4,Divorciado,Divorciado,18
+A,EC1-5,EC1-5,Union de hecho,Union de hecho,18
+A,GS1-1,GS1-1,O negativo,O negativo,19
+A,GS1-2,GS1-2,O positivo,O positivo,19
+A,GS1-3,GS1-3,A negativo,A negativo,19
+A,GS1-4,GS1-4,A positivo,A positivo,19
+A,GS1-5,GS1-5,AB negativo,AB negativo,19
+A,GS1-6,GS1-6,AB positivo,AB positivo,19
+A,NET1-1,NET1-1,Primaria,Primaria,20
+A,NET1-2,NET1-2,Bachillerato,Bachillerato,20
+A,NET1-3,NET1-3,Grado,Grado,20
+A,NET1-4,NET1-4,Postgrado,Postgrado,20
+A,PRT1-1,PRT1-1,Vendedor,Vendedor,21
+A,CDS1-1,CDS1-1,A0101011210,A0101011210,22
+A,CDS1-2,CDS1-2,A010101130,A010101130,22
+A,PT1-1,PT1-1,Conyugue,Conyugue,23
+A,PT1-2,PT1-2,Padre,Padre,23
+A,PT1-3,PT1-3,Madre,Madre,23
+A,PT1-4,PT1-4,Hijo,Hijo,23
+A,TDC1-1,TDC1-1,Visual,Visual,24
+A,TCE1-1,TCE1-1,Indefinido,Indefinido,25
+A,TCE1-2,TCE1-2,Parcial,Parcial,25
+A,TCE1-3,TCE1-3,Pasante,Pasante,25
+A,UBF1-1,UBF1-1,Patio matriz,Patio matriz,26
+A,UBF1-2,UBF1-2,Patio ajavi,Patio ajavi,26
+A,TPE1-1,TPE1-1,PT. Empresa,PT. Empresa,27
+A,TPE1-2,TPE1-2,PT. Vehículo,PT. Vehículo,27
+A,TDC1-2,TDC1-2,Ninguna,Ninguna,24
+A,TDC1-3,TDC1-3,Física,Física,24
+A,TDC1-4,TDC1-4,Auditiva,Auditiva,24
+A,TDD1-1,TDD1-1,transferencia bancaria,Transferencia,28
+A,TDD1-2,TDD1-2,deposito bancario,Depósito,28
+A,MST1-1,MST1-1,Renuncia voluntaria,Renuncia voluntaria,29
+A,MST1-2,MST1-2,Despido intenpestivo,Despido intenpestivo,29

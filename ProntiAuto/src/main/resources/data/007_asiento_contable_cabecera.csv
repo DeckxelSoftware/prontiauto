@@ -1,0 +1,5 @@
+sis_habilitado,anio,beneficiario,asiento_cerrado,codigo_referencial_asiento_contable,descripcion,fecha,mes_periodo,serie,tipo_asiento_contable,tipo_transaccion,total_credito,total_debito,total_saldo_actual_fecha,id_cheque,id_subgrupo_contable,id_cuenta_contable
+A,2020,Carlos,S,1001000001,Pago de Mercaderia,2020-07-01T14:59:55.711Z,JUL,G23855,E,I,190.24,90.24,90.24,1,1,1
+I,2021,Juan,N,2001000001,Pago de insumos,2021-02-01T14:59:55.711Z,FEB,34348,B,E,23.87,0,0,2,2,2
+A,2022,Andres,S,3001000001,Pago de viaticos,2022-04-01T14:59:55.711Z,ABR,B65833,C,D,0,0,210.23,3,3,3
+I,2023,Rodrigo,N,4001000001,Pagos extras,2021-12-01T14:59:55.711Z,AGO,4538,M,T,0,0,86.41,4,4,4

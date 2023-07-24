@@ -1,0 +1,9 @@
+sis_habilitado,codigo_novedad,tipo_novedad,valor,concepto,id_rubros_rol,id_trabajador,id_periodo_laboral
+A,AI,Multas,10.00,concepto 1,1,2,1
+A,AO,Otros descuentos,12.00,concepto 2,2,3,2
+A,AI,Consumo celular,5.45,concepto 3,2,4,2
+A,AI,Permiso Horas ,2,concepto 4,3,5,3
+A,AI,Horas extra 50,27,concepto 5,4,6,4
+A,AI,Horas extra 100,3,concepto 6,5,7,5
+A,AI,Retroactivo ,15.16,concepto 7,5,2,5
+A,AI,Otros Ingresos ,18,concepto 8,6,3,4

@@ -1,0 +1,8 @@
+sis_habilitado,comprobante_egreso,concepto,cuotas,estado,fecha_prestamo,modalidad_descuento,tasa_interes,tipo_prestamo,total_pagado,total_saldo,valor,id_trabajador,nombre_apellido_responsable,estado_solicitud
+A,3523,Prestamo para pago de deudas,4,PAG,2019-07-01T14:59:55.711Z,ROL,0,Empresa,200,0,200,1,nose 1,en tramite
+I,2355,Prestamo para pago de alimentos,6,PNT,2020-01-23T14:59:55.711Z,UTL,1,Empresa,435,165,600,2,nose 1,en tramite
+A,6785,Prestamo para pago de impuestos,7,PAG,2021-10-03T14:59:55.711Z,DCC,2,Empresa,350,0,350,3,nose 3,en tramite
+I,6808,Prestamo para pago de pasivos,8,PAG,2019-09-30T14:59:55.711Z,DCT,0,Empresa,580,0,580,4,nose 4,en tramite
+A,4532,Prestamo para pago de cesantias,4,PNT,2022-01-03T14:59:55.711Z,ROL,4,Empresa,481,564,1045,5,nose 5,en tramite
+A,3523,Prestamo para pago de deudas,4,PNT,2019-07-01T14:59:55.711Z,DCT,0,Empresa,200,0,200,1,nose 1,en tramite
+A,3523,Prestamo para pago de deudas,4,PNT,2019-07-01T14:59:55.711Z,DCT,0,Empresa,200,0,200,1,nose 1,en tramite

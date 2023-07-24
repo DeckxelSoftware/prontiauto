@@ -1,0 +1,8 @@
+sis_habilitado,total_cuotas,total_cuotas_pagadas,total_cuotas_mora,total_cuotas_pagadas_refinanciamiento,total_cuotas_faltantes_refinanciamiento,cuotas_restantes_sin_mora,valor_cuota,valor_pendiente_pago,valor_agregarse_cuota,fecha_refinanciamiento,id_historico_plan_contrato
+A,1,1,1,1,1,1,23.23,23.24,23.25,2017-07-01T14:59:55.711Z,1
+I,24,24,24,24,24,24,43.82,43.83,43.84,2017-07-01T14:59:55.711Z,2
+A,47,47,47,47,47,47,23.24,23.25,23.26,2017-07-01T14:59:55.711Z,3
+I,70,70,70,70,70,70,43.83,43.84,43.85,2017-07-01T14:59:55.711Z,3
+A,139,139,139,139,139,139,23.26,23.27,23.28,2017-07-01T14:59:55.711Z,2
+I,162,162,162,162,162,162,43.85,43.86,43.87,2017-07-01T14:59:55.711Z,3
+I,208,208,208,208,208,208,43.86,43.87,43.88,2017-07-01T14:59:55.711Z,1

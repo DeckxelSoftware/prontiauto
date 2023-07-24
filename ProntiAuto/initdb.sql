@@ -1,0 +1,5 @@
+CREATE DATABASE testing;
+CREATE DATABASE development;
+CREATE DATABASE production;
+
+CREATE USER prontiauto WITH SUPERUSER PASSWORD 'prontiauto2022';
