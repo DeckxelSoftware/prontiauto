@@ -2,13 +2,7 @@ package com.ec.prontiauto.entidad;
 
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import com.ec.prontiauto.abstracts.AbstractEntities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -52,6 +46,9 @@ public class Agencia extends AbstractEntities {
 
 	@OneToMany(mappedBy = "idAgencia")
 	private List<Trabajador> trabajadorCollection;
+
+	@OneToOne(mappedBy = "agencia")
+	private CabeceraCompra cabecera;
 
 	public Agencia() {
 	}
@@ -150,4 +147,11 @@ public class Agencia extends AbstractEntities {
 		this.trabajadorCollection = trabajadorCollection;
 	}
 
+	public CabeceraCompra getCabecera() {
+		return cabecera;
+	}
+
+	public void setCabecera(CabeceraCompra cabecera) {
+		this.cabecera = cabecera;
+	}
 }

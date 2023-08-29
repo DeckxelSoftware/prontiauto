@@ -2,9 +2,12 @@ package com.ec.prontiauto.facturacion.dao;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 import com.ec.prontiauto.abstracts.AbstractResponseDao;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FacturaResponseDao extends AbstractResponseDao {
     private String itRuc;
     private String itRazonSocial;
@@ -19,6 +22,10 @@ public class FacturaResponseDao extends AbstractResponseDao {
     private Date ifFechaEmision;
     private BigDecimal ifImporteTotal;
     private String jsonFactura;
+    private String estado;
+    private String claveAcceso;
+    private Timestamp fechaAutorizacion;
+    private String mensajeRespuesta;
 
     public FacturaResponseDao() {
     }
@@ -127,4 +134,35 @@ public class FacturaResponseDao extends AbstractResponseDao {
         this.jsonFactura = jsonFactura;
     }
 
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getClaveAcceso() {
+        return claveAcceso;
+    }
+
+    public void setClaveAcceso(String claveAcceso) {
+        this.claveAcceso = claveAcceso;
+    }
+
+    public Timestamp getFechaAutorizacion() {
+        return fechaAutorizacion;
+    }
+
+    public void setFechaAutorizacion(Timestamp fechaAutorizacion) {
+        this.fechaAutorizacion = fechaAutorizacion;
+    }
+
+    public String getMensajeRespuesta() {
+        return mensajeRespuesta;
+    }
+
+    public void setMensajeRespuesta(String mensajeRespuesta) {
+        this.mensajeRespuesta = mensajeRespuesta;
+    }
 }

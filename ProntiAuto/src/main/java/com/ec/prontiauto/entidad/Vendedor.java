@@ -1,6 +1,7 @@
 package com.ec.prontiauto.entidad;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -23,8 +24,12 @@ public class Vendedor extends AbstractEntities {
 	private Agencia idAgencia;
 
 	@OneToOne
-	@JoinColumn(name = "\"idTrabajador\"", referencedColumnName = "id", nullable = false, unique = true)
+	@JoinColumn(name = "\"idTrabajador\"", referencedColumnName = "id")
 	private Trabajador idTrabajador;
+
+	@OneToOne
+	@JoinColumn(name = "\"idProveedor\"", referencedColumnName = "id")
+	private Proveedor idProveedor;
 
 	@Transient
 	@CsvBindByName(column = "id_agencia")
@@ -95,7 +100,19 @@ public class Vendedor extends AbstractEntities {
 		if (registroActualizar.getIdAgencia().getId() != null) {
 			registroAntiguo.setIdAgencia(registroActualizar.getIdAgencia());
 		}
+		if (Objects.nonNull(registroActualizar.getIdProveedor().getId())) {
+			registroAntiguo.setIdProveedor(registroActualizar.getIdProveedor());
+		}
+
 
 		return registroAntiguo;
+	}
+
+	public Proveedor getIdProveedor() {
+		return idProveedor;
+	}
+
+	public void setIdProveedor(Proveedor idProveedor) {
+		this.idProveedor = idProveedor;
 	}
 }

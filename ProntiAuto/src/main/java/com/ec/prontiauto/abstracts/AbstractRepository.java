@@ -368,6 +368,7 @@ public abstract class AbstractRepository<Entity, IdType> implements GenericRepos
         }
         query.registerStoredProcedureParameter("responseValue", String.class, ParameterMode.OUT);
         query.execute();
+
         String json = (String) query.getOutputParameterValue("responseValue");
         JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
         boolean correcto = jsonObject.get("correcto").getAsBoolean();
@@ -380,14 +381,7 @@ public abstract class AbstractRepository<Entity, IdType> implements GenericRepos
 
     public Object callStoreProcedureGet(String procedureName, List<String> params, List<Object> values,
             HashMap<String, Object> filters) throws SQLException {
-        StoredProcedureQuery query = this.entityManager.createStoredProcedureQuery(procedureName);
-        int i = 0;
-        for (Object value : values) {
-            Class<?> clazz = value.getClass();
-            query.registerStoredProcedureParameter(params.get(i), clazz, ParameterMode.IN);
-            query.setParameter(params.get(i), value);
-            i++;
-        }
+        StoredProcedureQuery query = createStoreProcedureQuery(procedureName, params, values);
         String parametros = "{";
         String valores = "{";
         int j = 0;
@@ -413,6 +407,25 @@ public abstract class AbstractRepository<Entity, IdType> implements GenericRepos
         query.registerStoredProcedureParameter("responseValue", String.class, ParameterMode.OUT);
         query.execute();
         return query.getOutputParameterValue("responseValue");
+    }
+
+    public Object callSimpleStoreProcedure(String procedureName, List<String> params, List<Object> values) {
+        StoredProcedureQuery query = createStoreProcedureQuery(procedureName, params, values);;
+        query.registerStoredProcedureParameter("responseValue", String.class, ParameterMode.OUT);
+        query.execute();
+        return query.getOutputParameterValue("responseValue");
+    }
+
+    private StoredProcedureQuery createStoreProcedureQuery(String procedureName, List<String> params, List<Object> values) {
+        StoredProcedureQuery query = this.entityManager.createStoredProcedureQuery(procedureName);
+        int i = 0;
+        for (Object value : values) {
+            Class<?> clazz = value.getClass();
+            query.registerStoredProcedureParameter(params.get(i), clazz, ParameterMode.IN);
+            query.setParameter(params.get(i), value);
+            i++;
+        }
+        return query;
     }
 
     public <T> String abstractProcedure(T dao, String method) {

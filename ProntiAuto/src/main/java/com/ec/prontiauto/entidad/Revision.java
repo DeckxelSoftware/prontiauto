@@ -2,6 +2,7 @@ package com.ec.prontiauto.entidad;
 
 import java.sql.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,11 +40,11 @@ public class Revision {
     @CsvBindByName(column = "observaciones")
     private String observaciones;
 
-    @Column(name = "\"fechaFirmaAprobacion\"", nullable = false)
+    @Column(name = "\"fechafirmaaprovacion\"", nullable = false)
     @CsvBindByName(column = "fecha_firma_aprobacion")
     private Date fechaFirmaAprobacion;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "\"idArticulo\"", referencedColumnName = "id", nullable = false)
 	private Articulo idArticulo;
 

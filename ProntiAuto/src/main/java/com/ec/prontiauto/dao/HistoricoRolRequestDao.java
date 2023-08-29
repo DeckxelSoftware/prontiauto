@@ -70,7 +70,7 @@ public class HistoricoRolRequestDao extends AbstractRequestDao {
     private Float prestamoHipotecario;
     private Float pagoDecimoCuartoMes;
 
-    private Integer idRolPago;
+   // private Integer idRolPago;
 
 
 
@@ -586,13 +586,13 @@ public class HistoricoRolRequestDao extends AbstractRequestDao {
         this.pagoDecimoCuartoMes = pagoDecimoCuartoMes;
     }
 
-    public Integer getIdRolPago() {
+/*    public Integer getIdRolPago() {
         return idRolPago;
     }
 
     public void setIdRolPago(Integer idRolPago) {
         this.idRolPago = idRolPago;
-    }
+    }*/
 }
 
 

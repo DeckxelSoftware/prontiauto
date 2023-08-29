@@ -38,23 +38,23 @@ public class OrdenCompraValidation {
     private void createArticulo(){
         /* crear un artículo cuando se crea una orden de compra*/
 
-        Articulo articuloReq = entity.getIdArticulo();
+        Articulo articuloReq = entity.getArticulo();
         articuloReq.setId(null);
         articuloReq.setEstado("C");
         Articulo articulo = articuloRepository.createArticulo(articuloReq);
 
         articuloReq.setId(articulo.getId());
-        entity.setIdArticulo(articuloReq);
+        entity.setArticulo(articuloReq);
     }
 
     private void updateArticulo(){
 
         if(entity.getUpdateEntity() != null && entity.getUpdateEntity()) {
-            Articulo articuloReq = entity.getIdArticulo();
+            Articulo articuloReq = entity.getArticulo();
             Articulo articulo = articuloRepository.updateArticulo(articuloReq);
 
             articuloReq.setId(articulo.getId());
-            entity.setIdArticulo(articuloReq);
+            entity.setArticulo(articuloReq);
         }
     }
 

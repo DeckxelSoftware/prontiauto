@@ -1,19 +1,15 @@
 package com.ec.prontiauto.validations;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
+import com.ec.prontiauto.entidad.*;
+import com.ec.prontiauto.exception.ApiRequestException;
+import com.ec.prontiauto.helper.DatesHelper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-
-import com.ec.prontiauto.entidad.*;
-import com.ec.prontiauto.exception.ApiRequestException;
-
-import com.ec.prontiauto.helper.DatesHelper;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RolPagoValidation {
 

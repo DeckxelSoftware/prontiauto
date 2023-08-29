@@ -1,17 +1,19 @@
 
 package com.ec.prontiauto.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-
-import com.baomidou.mybatisplus.annotation.IdType;
+import com.ec.prontiauto.abstracts.AbstractController;
+import com.ec.prontiauto.abstracts.GenericMethods;
+import com.ec.prontiauto.dao.DecimoCuartoDao;
+import com.ec.prontiauto.dao.PagosDosRequestDao;
+import com.ec.prontiauto.dao.PagosDosResponseDao;
+import com.ec.prontiauto.dao.UtilidadesRequestDao;
+import com.ec.prontiauto.entidad.PagosDos;
 import com.ec.prontiauto.exception.ApiRequestException;
+import com.ec.prontiauto.exception.ExceptionResponse;
+import com.ec.prontiauto.mapper.PagosDosMapper;
+import com.ec.prontiauto.repositoryImpl.PagosDosRepositoryImpl;
 import com.ec.prontiauto.validations.PagosDosValidation;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,16 +21,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.ec.prontiauto.abstracts.AbstractController;
-import com.ec.prontiauto.abstracts.GenericMethods;
-import com.ec.prontiauto.dao.PagosDosRequestDao;
-import com.ec.prontiauto.dao.PagosDosResponseDao;
-import com.ec.prontiauto.entidad.PagosDos;
-import com.ec.prontiauto.exception.ExceptionResponse;
-import com.ec.prontiauto.mapper.PagosDosMapper;
-import com.ec.prontiauto.repositoryImpl.PagosDosRepositoryImpl;
-
-import io.swagger.annotations.Api;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/pagos2")
@@ -173,6 +172,26 @@ public class PagosDosController
             System.out.println("-------------------\n" + e.getMessage());
             throw new ApiRequestException(e.getMessage());
         }
+    }
+
+    @RequestMapping(value = "/decimo_cuarto", method = RequestMethod.POST)
+    public ResponseEntity<?> calcularDecimoCuarto(@RequestBody DecimoCuartoDao decimoCuartoDao){
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        List<String> params = Arrays.asList("fecha_inicio", "fecha_fin", "id_trabajador","id_periodo","tipo");
+        List<Object> values = Arrays.asList(decimoCuartoDao.getFechaInicio(), decimoCuartoDao.getFechaFin(), decimoCuartoDao.getIdTrabajador(), decimoCuartoDao.getIdPeriodo(), decimoCuartoDao.getTipo());
+        Object response = this.PagosDosRepositoryImpl.callSimpleStoreProcedure("calcular_decimo_cuarto", params, values);
+        return new ResponseEntity<>(response, httpHeaders, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/calcular-utilidades", method = RequestMethod.POST)
+    public ResponseEntity<?> calcularUtilidades(@RequestBody UtilidadesRequestDao utilidadesRequestDao){
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        List<String> params = Arrays.asList("fecha_inicio", "fecha_fin","id_periodo","id_pago_uno");
+        List<Object> values = Arrays.asList(utilidadesRequestDao.getFechaInicio(), utilidadesRequestDao.getFechaFin(), utilidadesRequestDao.getIdPeriodoLaboral(), utilidadesRequestDao.getIdPagoUno());
+        Object response = this.PagosDosRepositoryImpl.callSimpleStoreProcedure("calcular_utilidades", params, values);
+        return new ResponseEntity<>(response, httpHeaders, HttpStatus.OK);
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)

@@ -55,7 +55,7 @@ public class Articulo extends AbstractEntities {
     @CsvBindByName(column = "fecha_adjudicacion")
     private Date fechaAdjudicacion;
 
-    @OneToOne(mappedBy = "idArticulo")
+    @OneToOne(mappedBy = "articulo")
     private OrdenCompra idOrdenCompra;
 
     @OneToOne(mappedBy = "idArticulo")

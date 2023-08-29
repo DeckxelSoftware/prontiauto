@@ -91,9 +91,9 @@ public class HistoricoRolMapper {
             entity.setPrestamoHipotecario(daoRequest.getPrestamoHipotecario());
             entity.setPagoDecimoCuartoMes(daoRequest.getPagoDecimoCuartoMes());
 
-            RolPago rolPago = new RolPago();
+            /*RolPago rolPago = new RolPago();
             rolPago.setId(daoRequest.getIdRolPago());
-            entity.setIdRolPago(rolPago);
+            entity.setIdRolPago(rolPago);*/
 
 
             return entity;
@@ -170,11 +170,11 @@ public class HistoricoRolMapper {
             dao.setPrestamoHipotecario(entity.getPrestamoHipotecario());
             dao.setPagoDecimoCuartoMes(entity.getPagoDecimoCuartoMes());
 
-            if (entity.getIdRolPago() != null &&
+            /*if (entity.getIdRolPago() != null &&
                     entity.getIdRolPago().getId() != null) {
                 dao.setIdRolPago(
                         RolPagoMapper.setEntityToDaoReference.apply(entity.getIdRolPago()));
-            }
+            }*/
 
 
             return dao;

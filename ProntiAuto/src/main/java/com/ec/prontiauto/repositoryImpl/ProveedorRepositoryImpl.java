@@ -25,6 +25,7 @@ public class ProveedorRepositoryImpl extends AbstractRepository<Proveedor, Integ
         listFilters.add("idEmpresa");
         listFilters.add("idUsuario");
         listFilters.add("id");
+        listFilters.add("tipoProveedor");
 
         Query queryEM = this.CreateQueryWithFiltersSinAnd(listFilters, params, dbQuery);
         int countReults = queryEM.getResultList().size();

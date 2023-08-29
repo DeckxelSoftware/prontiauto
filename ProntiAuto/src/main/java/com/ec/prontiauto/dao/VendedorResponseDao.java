@@ -9,6 +9,7 @@ public class VendedorResponseDao extends AbstractResponseDao {
 
 	private AgenciaResponseDao idAgencia;
 	private TrabajadorResponseDao idTrabajador;
+	private ProveedorResponseDao idProveedor;
 	private List<Contrato> contratoCollection;
 
 	public TrabajadorResponseDao getIdTrabajador() {
@@ -39,4 +40,11 @@ public class VendedorResponseDao extends AbstractResponseDao {
 		this.contratoCollection = contratoCollection;
 	}
 
+	public ProveedorResponseDao getIdProveedor() {
+		return idProveedor;
+	}
+
+	public void setIdProveedor(ProveedorResponseDao idProveedor) {
+		this.idProveedor = idProveedor;
+	}
 }

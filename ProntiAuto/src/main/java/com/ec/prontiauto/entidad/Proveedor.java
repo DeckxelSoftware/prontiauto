@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -58,6 +59,9 @@ public class Proveedor extends AbstractEntities {
 	@JsonIgnore
 	@OneToMany(mappedBy = "idProveedor")
 	private List<OrdenCompra> ordenCompraCollection;
+
+	@OneToOne(mappedBy = "idProveedor")
+	private Vendedor vendedor;
 
 	@Transient
 	@CsvBindByName(column = "id_usuario")
@@ -195,4 +199,11 @@ public class Proveedor extends AbstractEntities {
 		return registroAntiguo;
 	}
 
+	public Vendedor getVendedor() {
+		return vendedor;
+	}
+
+	public void setVendedor(Vendedor vendedor) {
+		this.vendedor = vendedor;
+	}
 }

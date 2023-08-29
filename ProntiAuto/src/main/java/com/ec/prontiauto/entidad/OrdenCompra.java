@@ -2,6 +2,7 @@ package com.ec.prontiauto.entidad;
 
 import java.sql.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -108,9 +109,9 @@ public class OrdenCompra extends AbstractEntities {
     @JoinColumn(name = "\"idContrato\"", referencedColumnName = "id", nullable = false)
     private Contrato idContrato;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "\"idArticulo\"", referencedColumnName = "id", nullable = false)
-    private Articulo idArticulo;
+    private Articulo articulo;
 
     @ManyToOne
     @JoinColumn(name = "\"idProveedor\"", referencedColumnName = "id", nullable = false)
@@ -136,12 +137,12 @@ public class OrdenCompra extends AbstractEntities {
         this.idProveedor = proveedor;
     }
 
-    public Articulo getIdArticulo() {
-        return this.idArticulo;
+    public Articulo getArticulo() {
+        return articulo;
     }
 
-    public void setIdArticulo(Articulo articulo) {
-        this.idArticulo = articulo;
+    public void setArticulo(Articulo articulo) {
+        this.articulo = articulo;
     }
 
     public Contrato getIdContrato() {

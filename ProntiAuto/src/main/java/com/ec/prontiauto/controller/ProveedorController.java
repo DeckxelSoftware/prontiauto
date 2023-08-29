@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -136,16 +137,19 @@ public class ProveedorController
 
 	public Proveedor setDaoRequestToEntityProveedorUsuario(ProveedorRequestDao dao, boolean isUpdate, Integer id) {
 
+
 		Proveedor proveedor = isUpdate ? (Proveedor) genericMethods.findById("Proveedor", entityManager, id) : null;
 
 		if (dao.getIdUsuario() != null && dao.getIdUsuario() instanceof Object) {
 			ObjectMapper mapper = new ObjectMapper();
+			mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			Usuario usuario = dao.getIdUsuario() != null ? mapper.convertValue(dao.getIdUsuario(), Usuario.class)
 					: null;
 			if (isUpdate && usuario != null && proveedor.getIdUsuario() != null) {
 				Usuario newUsuario = this.updateUsuario(usuario, proveedor.getIdUsuario().getId());
 				dao.setIdUsuario(newUsuario.getId());
 			} else if (!isUpdate && usuario != null && dao.getIdUsuario() != null) {
+				usuario.setSisHabilitado("A");
 				Usuario newUsuario = usuarioRepository.createUser(usuario);
 				dao.setIdUsuario(newUsuario.getId());
 			} else if (isUpdate && usuario != null && proveedor.getIdUsuario() == null) {
@@ -275,6 +279,7 @@ public class ProveedorController
 			String sisHabilitado,
 			Integer idEmpresa,
 			Integer idUsuario,
+			String tipoProveedor,
 			Integer id,
 			Integer skip,
 			Integer take,
@@ -296,6 +301,7 @@ public class ProveedorController
 			params.put("idUsuario", idUsuario == null ? "" : usuario);
 
 			params.put("id", id == null ? "" : id);
+			params.put("tipoProveedor", tipoProveedor == null ? "" : tipoProveedor);
 
 			String sortFieldDefault = "id";
 			sortField = sortField == null ? sortFieldDefault : sortField;

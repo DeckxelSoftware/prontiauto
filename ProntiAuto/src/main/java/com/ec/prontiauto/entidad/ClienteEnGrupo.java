@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -20,7 +19,7 @@ import com.opencsv.bean.CsvBindByName;
 		"\"idGrupo\"" }))
 public class ClienteEnGrupo extends AbstractEntities {
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "\"idCliente\"", referencedColumnName = "id", nullable = false)
 	@CsvBindByName(column = "id_cliente")
 	private Cliente idCliente;

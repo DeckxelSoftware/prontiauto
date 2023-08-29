@@ -261,6 +261,11 @@ public class Trabajador extends AbstractEntities {
 	@CsvBindByName(column = "id_agencia")
 	private Integer idAgencia1;
 
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "trabajador")
+	private List<Finiquito> finiquitosCollection;
+
 	public Trabajador() {
 	}
 
@@ -742,6 +747,14 @@ public class Trabajador extends AbstractEntities {
 
 	public void setPagosDosCollection(List<PagosDos> pagosDosCollection) {
 		this.pagosDosCollection = pagosDosCollection;
+	}
+
+	public List<Finiquito> getFiniquitosCollection() {
+		return finiquitosCollection;
+	}
+
+	public void setFiniquitosCollection(List<Finiquito> finiquitosCollection) {
+		this.finiquitosCollection = finiquitosCollection;
 	}
 
 	public Trabajador setValoresDiferentes(Trabajador registroAntiguo, Trabajador registroActualizar) {

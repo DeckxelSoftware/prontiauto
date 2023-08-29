@@ -251,6 +251,8 @@ public class CuentaContableMapper {
 			return (List<CuentaContableResponseDao>) StreamSupport.stream(entityList.spliterator(), true)
 					.map(CuentaContableMapper.setEntityToDaoResponse).collect(Collectors.toList());
 		});
+		//setEntityListToDaoResponseList = (entityList ->  entityList.stream().map(CuentaContableResponseDao::new).collect(Collectors.toList()));
+		
 		setEntityListToDaoReferenceList = (entityList -> {
 			return (List<CuentaContableResponseDao>) StreamSupport.stream(entityList.spliterator(), true)
 					.map(CuentaContableMapper.setEntityToDaoReference).collect(Collectors.toList());

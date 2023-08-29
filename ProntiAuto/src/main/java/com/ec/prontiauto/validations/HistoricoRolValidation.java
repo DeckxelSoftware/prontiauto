@@ -5,8 +5,8 @@ import com.ec.prontiauto.exception.ApiRequestException;
 import com.ec.prontiauto.utils.MailerClass;
 
 import javax.persistence.EntityManager;
-import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Objects;
 
 public class HistoricoRolValidation {
 
@@ -34,9 +34,10 @@ public class HistoricoRolValidation {
     }
 
     private void validateRelationEntities(){
-        if( entity.getIdRolPago() == null || entity.getIdRolPago().getId() == null ){
-            throw new ApiRequestException("El idRolPago no puede ser nulo");
-        }
+       if(Objects.isNull(entity.getHistorialLaboral()) || Objects.isNull(entity.getHistorialLaboral().getId()))
+            throw new ApiRequestException("El idHistorialLaboral no puede ser nulo");
+        else if(Objects.isNull(entity.getIdPeriodoLaboral()) || Objects.isNull(entity.getIdPeriodoLaboral().getId()))
+            throw new ApiRequestException("El idPeriodoLaboral no puede ser nulo");
     }
 
     private PeriodoLaboral getPeriodoLaboralByRol(){
@@ -44,12 +45,11 @@ public class HistoricoRolValidation {
         try {
             String queryText = "SELECT e FROM PeriodoLaboral e " +
                     "INNER JOIN RolPago r on r.idPeriodoLaboral=e.id " +
-                    "INNER JOIN PagosDos p on p.idPeriodoLaboral=e.id " +
                     "INNER JOIN Trabajador t on p.idTrabajador=t.id " +
-                    "WHERE r.id = :idRolPago";
+                    "WHERE e.id = :idPeriodoLaboral";
 
             List<PeriodoLaboral> collection = (List<PeriodoLaboral>) em.createQuery(queryText)
-                    .setParameter("idRolPago",entity.getIdRolPago().getId())
+                    .setParameter("idPeriodoLaboral",entity.getIdPeriodoLaboral().getId())
                     .getResultList();
             if(collection.size() > 0){
                 periodoLaboral = collection.get(0);

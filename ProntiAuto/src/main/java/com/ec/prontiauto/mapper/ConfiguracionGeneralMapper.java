@@ -31,6 +31,10 @@ public class ConfiguracionGeneralMapper {
             entity.setSisHabilitado(daoRequest.getSisHabilitado());
             entity.setRastreo(daoRequest.getRastreo());
             entity.setDispositivo(daoRequest.getDispositivo());
+            entity.setPatronalPasante(daoRequest.getPatronalPasante());
+            entity.setPatronalParcial(daoRequest.getPatronalParcial());
+            entity.setCodigoEstablecimiento(daoRequest.getCodigoEstablecimiento());
+            entity.setPuntoEmision(daoRequest.getPuntoEmision());
             return entity;
         });
 
@@ -54,6 +58,10 @@ public class ConfiguracionGeneralMapper {
             dao.setSisCreado(entity.getSisCreado());
             dao.setSisArchivo(entity.getSisArchivo());
             dao.setSisImagen(entity.getSisImagen());
+            dao.setPatronalPasante(entity.getPatronalPasante());
+            dao.setPatronalParcial(entity.getPatronalParcial());
+            dao.setCodigoEstablecimiento(entity.getCodigoEstablecimiento());
+            dao.setPuntoEmision(entity.getPuntoEmision());
             return dao;
         });
 

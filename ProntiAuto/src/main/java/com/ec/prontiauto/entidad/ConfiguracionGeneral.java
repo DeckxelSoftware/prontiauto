@@ -1,6 +1,7 @@
 package com.ec.prontiauto.entidad;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -60,6 +61,24 @@ public class ConfiguracionGeneral extends AbstractEntities {
 	@Column(name = "\"dispositivo\"", nullable = false)
 	@CsvBindByName(column = "dispositivo")
 	private BigDecimal dispositivo;
+
+	@Column(name = "cod_establecimiento")
+	@CsvBindByName(column = "codigoEstablecimiento")
+	private String codigoEstablecimiento;
+
+	@Column(name = "punto_emision")
+	@CsvBindByName(column = "puntoEmision")
+	private String puntoEmision;
+
+
+	@Column(name = "patronal_parcial")
+	@CsvBindByName(column = "patronalParcial")
+	private BigDecimal patronalParcial;
+
+
+	@Column(name = "patronal_pasante")
+	@CsvBindByName(column = "patronalPasante")
+	private BigDecimal patronalPasante;
 
 	public ConfiguracionGeneral() {
 	}
@@ -194,6 +213,22 @@ public class ConfiguracionGeneral extends AbstractEntities {
 			registroAntiguo.setDispositivo(registroActualizar.getDispositivo());
 		}
 
+		if (Objects.nonNull(registroActualizar.getCodigoEstablecimiento())) {
+			registroAntiguo.setCodigoEstablecimiento(registroActualizar.getCodigoEstablecimiento());
+		}
+
+		if (Objects.nonNull(registroActualizar.getPuntoEmision())) {
+			registroAntiguo.setPuntoEmision(registroActualizar.getPuntoEmision());
+		}
+
+		if (Objects.nonNull(registroActualizar.getPatronalParcial())) {
+			registroAntiguo.setPatronalParcial(registroActualizar.getPatronalParcial());
+		}
+
+		if (Objects.nonNull(registroActualizar.getPatronalPasante())) {
+			registroAntiguo.setPatronalPasante(registroActualizar.getPatronalPasante());
+		}
+
 		return registroAntiguo;
 	}
 
@@ -205,4 +240,35 @@ public class ConfiguracionGeneral extends AbstractEntities {
 		this.numDiasVacacionesAlAnio = numDiasVacacionesAlAnio;
 	}
 
+	public String getCodigoEstablecimiento() {
+		return codigoEstablecimiento;
+	}
+
+	public void setCodigoEstablecimiento(String codigoEstablecimiento) {
+		this.codigoEstablecimiento = codigoEstablecimiento;
+	}
+
+	public String getPuntoEmision() {
+		return puntoEmision;
+	}
+
+	public void setPuntoEmision(String puntoEmision) {
+		this.puntoEmision = puntoEmision;
+	}
+
+	public BigDecimal getPatronalParcial() {
+		return patronalParcial;
+	}
+
+	public void setPatronalParcial(BigDecimal patronalParcial) {
+		this.patronalParcial = patronalParcial;
+	}
+
+	public BigDecimal getPatronalPasante() {
+		return patronalPasante;
+	}
+
+	public void setPatronalPasante(BigDecimal patronalPasante) {
+		this.patronalPasante = patronalPasante;
+	}
 }

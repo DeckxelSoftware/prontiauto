@@ -70,9 +70,6 @@ public class HistoricoRolResponseDao extends AbstractResponseDao {
     private Float prestamoHipotecario;
     private Float pagoDecimoCuartoMes;
 
-    private RolPagoResponseDao idRolPago;
-
-
     public Integer getHoras25() {
         return horas25;
     }
@@ -585,11 +582,4 @@ public class HistoricoRolResponseDao extends AbstractResponseDao {
         this.pagoDecimoCuartoMes = pagoDecimoCuartoMes;
     }
 
-    public RolPagoResponseDao getIdRolPago() {
-        return idRolPago;
-    }
-
-    public void setIdRolPago(RolPagoResponseDao idRolPago) {
-        this.idRolPago = idRolPago;
-    }
 }

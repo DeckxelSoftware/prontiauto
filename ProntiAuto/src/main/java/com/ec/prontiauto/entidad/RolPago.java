@@ -348,9 +348,6 @@ public class RolPago extends AbstractEntities {
     @JoinColumn(name = "\"idHistorialLaboral\"", referencedColumnName = "id", nullable = false)
     private HistorialLaboral idHistorialLaboral;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "idRolPago")
-    private List<HistoricoRol> historicoRolPagoCollection;
 
     @Transient
     @CsvBindByName(column = "id_periodo_laboral")

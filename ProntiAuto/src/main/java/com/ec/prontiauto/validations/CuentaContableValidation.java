@@ -5,7 +5,15 @@ import javax.persistence.Query;
 
 import com.ec.prontiauto.entidad.CuentaContable;
 import com.ec.prontiauto.entidad.PeriodoContable;
+import com.ec.prontiauto.entidad.PeriodoLaboral;
 import com.ec.prontiauto.exception.ApiRequestException;
+import org.apache.commons.lang3.StringUtils;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class CuentaContableValidation {
 
@@ -28,6 +36,7 @@ public class CuentaContableValidation {
         this.getPeriodoContableActual();
         validarIdentificador();
         calculoNivelesIdentificador();
+        calcularNuevosSaldos();
 
         entity.setIdPeriodoContable(periodoContable);
     }
@@ -109,6 +118,72 @@ public class CuentaContableValidation {
                 throw new ApiRequestException("El nivel debe ser entre 1 y 5");
         }
 
+    }
+
+    private void calcularNuevosSaldos(){
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMMM", new Locale("es", "ES"));
+        String mesActual = StringUtils.capitalize(LocalDate.now().format(dateFormatter));
+        Float saldoMes;
+        try {
+
+            Method obtenerDebitoDeMesActual = entity.getClass().getDeclaredMethod("get"+mesActual+"Debito");
+            Method obtenerCreditoDeMesActual = entity.getClass().getDeclaredMethod("get"+mesActual+"Credito");
+            Float saldoActual =  Objects.isNull(entity.getActualSaldo()) ? 0f : entity.getActualSaldo();
+            Float totalDebitoMes = Objects.isNull(obtenerDebitoDeMesActual.invoke(entity)) ? 0f : (Float) obtenerDebitoDeMesActual.invoke(entity) ;
+            Float totalCreditoMes = Objects.isNull(obtenerCreditoDeMesActual.invoke(entity)) ? 0f : (Float) obtenerCreditoDeMesActual.invoke(entity);
+
+
+            if (Objects.equals(entity.getTipoCuenta(), "D")){
+                saldoMes = saldoActual + (totalDebitoMes - totalCreditoMes);
+                saldoActual = saldoMes;
+            }else{
+                saldoMes = saldoActual - (totalDebitoMes + totalCreditoMes);
+                saldoActual = saldoMes;
+            }
+
+            entity.getClass().getDeclaredMethod("set"+mesActual+"Saldo", Float.class).invoke(entity, saldoMes);
+            entity.setActualSaldo(saldoActual);
+
+            Map<String, Float> valoresPeriodoAnterior = obtenerValoresPeriodoAnterior(entity.getNombre());
+
+            entity.setAnteriorDebito(valoresPeriodoAnterior.getOrDefault("anteriorDebito", 0f));
+            entity.setAnteriorCredito(valoresPeriodoAnterior.getOrDefault("anteriorCredito", 0f));
+            entity.setAnteriorSaldo(valoresPeriodoAnterior.getOrDefault("saldoAnterior", 0f));
+
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+
+    private Map<String, Float> obtenerValoresPeriodoAnterior(String nombreCuenta){
+        PeriodoContable periodoContableAnterior = obtenerPeriodoContableAnterior();
+        Query query = this.em.createQuery("SELECT p FROM CuentaContable p WHERE p.idPeriodoContable= :idPeriodoContableAnterior and lower(p.nombre) like lower(:nombre)");
+        query.setParameter("idPeriodoContableAnterior",periodoContableAnterior);
+        query.setParameter("nombre", nombreCuenta);
+
+
+        Optional cuentaContableOpt = query.getResultStream().findFirst();
+
+        if(!cuentaContableOpt.isPresent())
+            return Collections.emptyMap();
+
+        CuentaContable cuentaContable = (CuentaContable) cuentaContableOpt.get();
+        Map<String, Float> valoresPeriodoAnterior = new HashMap<>();
+        valoresPeriodoAnterior.put("saldoAnterior", cuentaContable.getActualSaldo());
+        valoresPeriodoAnterior.put("anteriorDebito", cuentaContable.getActualDebito());
+        valoresPeriodoAnterior.put("anteriorCredito", cuentaContable.getActualCredito());
+
+        return valoresPeriodoAnterior;
+    }
+
+    private PeriodoContable obtenerPeriodoContableAnterior() {
+        Integer anioAnterior = this.periodoContable.getAnio() -1;
+        Query query = this.em.createQuery("SELECT p FROM PeriodoContable p WHERE p.anio=:anioAnterior");
+        query.setParameter("anioAnterior", anioAnterior);
+        return  (PeriodoContable) query.getSingleResult();
     }
 
     public CuentaContable getEntity() {

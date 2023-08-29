@@ -1,11 +1,15 @@
 package com.ec.prontiauto.controller;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 import javax.transaction.Transactional;
 
+import com.ec.prontiauto.enums.EnumConsulta;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -310,5 +314,25 @@ public class ContratoController {
 			System.out.println("-------------------\n" + e.getMessage());
 			throw new ApiRequestException(e.getMessage());
 		}
+	}
+
+
+	@RequestMapping(value = "/asamblea", method = RequestMethod.GET)
+	public ResponseEntity<?> obtenerReporteAsamblea(String fecha) {
+		final HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+		Object response;
+		try {
+			response = this.contratoRepository.generarReporteAsamblea(fecha);
+		} catch (SQLException e) {
+			throw new ApiRequestException(e.getMessage());
+		}
+		return new ResponseEntity<>(response, httpHeaders, HttpStatus.OK);
+	}
+
+	public PageRequest getPageRequest(Integer skip, Integer take, String sortField, Boolean sortAscending) {
+		return PageRequest.of(skip == null ? EnumConsulta.SKIP.getValor() : skip,
+				take == null ? EnumConsulta.TAKE.getValor() : take,
+				sortAscending ? Sort.by(sortField).ascending() : Sort.by(sortField).descending());
 	}
 }
