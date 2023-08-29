@@ -406,10 +406,10 @@ public abstract class AbstractRepository<Entity, IdType> implements GenericRepos
         parametros += "}";
         valores += "}";
         ;
-        query.registerStoredProcedureParameter("parametros", String.class, ParameterMode.IN);
-        query.setParameter("parametros", parametros);
-        query.registerStoredProcedureParameter("valores", String.class, ParameterMode.IN);
-        query.setParameter("valores", valores);
+        query.registerStoredProcedureParameter("parametros_par", String.class, ParameterMode.IN);
+        query.setParameter("parametros_par", parametros);
+        query.registerStoredProcedureParameter("valores_par", String.class, ParameterMode.IN);
+        query.setParameter("valores_par", valores);
         query.registerStoredProcedureParameter("responseValue", String.class, ParameterMode.OUT);
         query.execute();
         return query.getOutputParameterValue("responseValue");
