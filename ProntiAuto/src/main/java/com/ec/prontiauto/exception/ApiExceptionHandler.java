@@ -11,7 +11,8 @@ import java.util.Objects;
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = { ApiRequestException.class })
     public ResponseEntity<Object> handleApiRequestException(ApiRequestException e) {
-        ApiException apiException = new ApiException(e.getMessage(), Objects.isNull(e.getStatusCode()) ? HttpStatus.BAD_REQUEST.toString() : e.getStatusCode().toString());
-        return new ResponseEntity<>(apiException, e.getStatusCode());
+        final HttpStatus statusCode = Objects.isNull(e.getStatusCode()) ? HttpStatus.BAD_REQUEST : e.getStatusCode();
+        ApiException apiException = new ApiException(e.getMessage(), statusCode.toString());
+        return new ResponseEntity<>(apiException, statusCode);
     }
 }
