@@ -348,9 +348,7 @@ public class TrabajadorMapper {
             return (List<TrabajadorResponseDao>) StreamSupport.stream(entityList.spliterator(), true)
                     .map(TrabajadorMapper.setEntityToDaoResponse).collect(Collectors.toList());
         });
-        setEntityListToDaoReferenceList = (entityList -> {
-            return (List<TrabajadorResponseDao>) StreamSupport.stream(entityList.spliterator(), true)
-                    .map(TrabajadorMapper.setEntityToDaoReference).collect(Collectors.toList());
-        });
+
+        setEntityListToDaoReferenceList = (entityList -> entityList.stream().map(TrabajadorMapper.setEntityToDaoReference).collect(Collectors.toList()));
     }
 }

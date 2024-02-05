@@ -67,9 +67,7 @@ public class AgenciaMapper {
             dao.setSisImagen(entity.getSisImagen());
             return dao;
         });
-        setEntityListToDaoResponseList = (entityList -> {
-            return (List<AgenciaResponseDao>) StreamSupport.stream(entityList.spliterator(), true)
-                    .map(AgenciaMapper.setEntityToDaoResponse).collect(Collectors.toList());
-        });
+
+        setEntityListToDaoResponseList = (entityList) -> entityList.stream().map(AgenciaMapper.setEntityToDaoResponse).collect(Collectors.toList());
     }
 }

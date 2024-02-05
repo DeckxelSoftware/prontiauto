@@ -36,6 +36,7 @@ import com.ec.prontiauto.repositoryImpl.EmpresaRepositoryImpl;
 import com.ec.prontiauto.repositoryImpl.UsuarioRepositoryImpl;
 
 import io.swagger.annotations.Api;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/cliente")
@@ -131,8 +132,8 @@ public class ClienteController extends AbstractController<Cliente, ClienteReques
 			Object response = this.devolverRespuestaDao(newEntity);
 			return new ResponseEntity<>(response, httpHeaders, HttpStatus.OK);
 		} catch (Exception e) {
-			System.out.println("-------------------\n" + e.getCause().getCause().getMessage());
-			throw new ApiRequestException(e.getMessage());
+			//System.out.println("-------------------\n" + e.getCause().getCause().getMessage());
+			throw new ApiRequestException(e.getMessage(), HttpStatus.CONFLICT);
 		}
 	}
 
