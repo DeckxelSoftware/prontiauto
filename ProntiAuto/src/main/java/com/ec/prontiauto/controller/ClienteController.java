@@ -1,26 +1,5 @@
 package com.ec.prontiauto.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-
-import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.ec.prontiauto.abstracts.AbstractController;
 import com.ec.prontiauto.abstracts.GenericMethods;
 import com.ec.prontiauto.dao.ClienteRequestDao;
@@ -34,9 +13,21 @@ import com.ec.prontiauto.mapper.ClienteMapper;
 import com.ec.prontiauto.repositoryImpl.ClienteRepositoryImpl;
 import com.ec.prontiauto.repositoryImpl.EmpresaRepositoryImpl;
 import com.ec.prontiauto.repositoryImpl.UsuarioRepositoryImpl;
-
 import io.swagger.annotations.Api;
-import org.springframework.web.server.ResponseStatusException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/cliente")

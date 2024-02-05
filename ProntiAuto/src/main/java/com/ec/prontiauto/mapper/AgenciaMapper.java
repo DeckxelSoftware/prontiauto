@@ -1,14 +1,13 @@
 package com.ec.prontiauto.mapper;
 
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
 import com.ec.prontiauto.dao.AgenciaRequestDao;
 import com.ec.prontiauto.dao.AgenciaResponseDao;
 import com.ec.prontiauto.entidad.Agencia;
 import com.ec.prontiauto.entidad.Region;
+
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class AgenciaMapper {
     public static Function<AgenciaRequestDao, Agencia> setDaoRequestToEntity;
