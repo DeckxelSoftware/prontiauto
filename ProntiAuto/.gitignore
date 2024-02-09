@@ -13,7 +13,7 @@ local.properties
 
 # External tool builders
 .externalToolBuilders/
-.idea/
+.idea/*
 .idea
 dev.docker-compose.yml
 # Locally stored "Eclipse launch configurations"

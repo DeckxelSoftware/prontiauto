@@ -39,7 +39,7 @@ public class Revision {
     @CsvBindByName(column = "observaciones")
     private String observaciones;
 
-    @Column(name = "\"fechaFirmaAprobacion\"", nullable = false)
+    @Column(name = "\"fechafirmaaprobacion\"", nullable = false)
     @CsvBindByName(column = "fecha_firma_aprobacion")
     private Date fechaFirmaAprobacion;
 

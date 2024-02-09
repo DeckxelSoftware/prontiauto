@@ -3199,3 +3199,1183 @@
     $$ LANGUAGE plpgsql;
 
 ----- siguiente
+--
+create or replace function registrar_factura(id_pago integer, id_contrato integer, pagos character varying) returns void
+    language plpgsql
+as
+$$
+declare
+contrato               public.contrato;
+    empresa                public.empresa;
+    codigo_establecimiento varchar(255);
+    pto_emision            varchar(255);
+    det_pagos              public.detalle_pago;
+    item                   json;
+    det_factura            jsonb;
+    factura                jsonb ;
+    iva                    numeric;
+    --valor_iva              numeric;
+    num_documento          varchar(255);
+    num_factura            integer;
+    codigo_factura         varchar(255);
+    lleva_contabilidad         varchar(255);
+    identificacion_comprador         varchar(255);
+    total_subtotal               numeric;
+    total_iva              numeric;
+    total              numeric;
+    idx numeric := 1;
+    subtotal_item               numeric;
+    iva_item               numeric;
+    total_item               numeric;
+
+
+BEGIN
+    contrato := (select c from contrato c where c.id = id_contrato);
+    empresa := (select e from empresa e where e."rucEmpresa" = '1718264839001');
+select cod_establecimiento, punto_emision, "ivaPorcentaje"
+into codigo_establecimiento, pto_emision, iva
+from configuracion_general cg;
+num_factura := (select nextval('factura_no_seq'));
+    codigo_factura := (select trim(to_char(num_factura, '000000000')));
+    identificacion_comprador := (select rpad(trim(contrato."documentoIdentidad"::text), 13, '0'));
+    num_documento := concat(codigo_establecimiento, '-', pto_emision, '-', codigo_factura);
+    lleva_contabilidad := case when empresa."obligadoLlevarContabilidad" = 'S' then 'SI' else 'NO' end;
+
+    factura :=
+            jsonb_build_object('agenteRetencion', false, 'amCodigo', '1', 'codigoPorcentaje', '2', 'direccionComprador',
+                               'PRUEBAS','direccionMatriz', 'PRUEBAS',  'establecimientoEmpresa', codigo_establecimiento, 'facCodIva', '2',
+                               'facDescuento', 0.0000, 'facFecha', to_char(current_timestamp, 'YYYY-MM-DD"T"HH24:MI:SSOF:TZM'), 'facIva', 0.00, 'facMoneda', 'DOLAR',
+                               'facNumero',num_factura, 'facNumeroText', codigo_factura, 'facPlazo',
+                               contrato."plazoMesSeleccionado",
+                               'facPorcentajeIva', '12', 'facSubsidio', 0.00, 'facSubtotal', 0.00, 'facTarifaIce', 0,
+                               'facTotal', 0.0, 'facTotalBaseCero', 0.00,
+                               'facTotalBaseGravada', 0.00, 'facUnidaTiempo', 'dias', 'facValorIce', 0.00, 'grabaICE',false,
+                               'identificacionComprador',identificacion_comprador,
+                               'llevarContabilidad', lleva_contabilidad, 'nombreComercialEmpresa',
+                               empresa."nombreComercial",
+                               'puntoEmisionEmpresa', pto_emision, 'razonSocialComprador',
+                               concat(contrato."nombresCliente", ' ', contrato."apellidosCliente"),
+                               'razonSocialEmpresa', empresa."razonSocial", 'regimenGeneral', empresa."regimenGeneral",
+                               'rimpeEmprendedor', empresa."rimpeEmprendedor",
+                               'rimpePolpular', empresa."rimpePolpular", 'rucEmpresa', empresa."rucEmpresa",
+                               'tipoIdentificacionComprador', '04' /*contrato."tipoDocumentoIdentidad"*/, 'codigoFormaPago', '01',
+                               'detFacturaDao', jsonb_build_array());
+
+
+FOR item in SELECT * FROM json_array_elements((pagos::json ->> 'detalleCobros')::json)
+                              LOOP
+
+    IF (item ->> 'tipo')::varchar != 'AC' THEN
+            RAISE NOTICE '========================================================';
+RAISE NOTICE 'id pago % ', id_pago;
+            det_pagos :=
+                    (select d from detalle_pago d where d."idPago" = id_pago and d.tipo = (item ->> 'tipo')::varchar limit 1);
+
+            IF item ->> 'tipo' != 'I' then
+                --valor_iva = det_pagos.valor * (iva * 0.01);
+                subtotal_item := coalesce(det_pagos.valor,0) / ((iva * 0.01) + 1);
+                iva_item := coalesce(det_pagos.valor,0) - coalesce(subtotal_item, 0);
+else
+                --valor_iva = det_pagos.valor * (iva * 0.01);
+                subtotal_item := coalesce(det_pagos.valor,0);
+                iva_item := coalesce(det_pagos.valor,0) * (iva * 0.01);
+end if;
+
+            /*valor_iva = det_pagos.valor * (iva * 0.01);
+            subtotal := coalesce(subtotal,0) + coalesce(det_pagos.valor,0);
+            total_iva := coalesce(total_iva,0) + coalesce(valor_iva, 0);*/
+
+        -- valor_iva = det_pagos.valor * (iva * 0.01);
+            total_subtotal := coalesce(total_subtotal,0) + coalesce(subtotal_item,0);
+            total_iva := coalesce(total_iva,0) + coalesce(iva_item, 0);
+
+
+            RAISE NOTICE 'Parsing Item tipo %, monto %  , subtotal %, iva %', item ->> 'tipo', det_pagos.valor,  subtotal_item, total_iva;
+            det_factura := jsonb_build_object('detTarifa', iva, 'detIva', iva_item, 'detSubtotal', subtotal_item,
+                                              'detSubtotaldescuento', subtotal_item, 'codigoProducto', trim(to_char(idx, '00000')),
+                                              'descripcionProducto', item ->> 'descripcion', 'detCantidad', 1.00, 'detCantpordescuento',
+                                              0.00000,
+                                              'detCodIva', '2', 'detCodPorcentaje', '2', 'detValorIce', 0.00,
+                                              'tieneSubsidio', false);
+            RAISE NOTICE 'Detalle de factura a guardar %', det_factura;
+
+            factura := jsonb_insert(factura, '{detFacturaDao,1}', det_factura, true);
+
+            idx := coalesce(idx, 0) + 1;
+
+END IF;
+
+end loop;
+
+    total := coalesce(total_iva,0) + coalesce(total_subtotal,0);
+
+    RAISE NOTICE 'Valores finales subtotal %, iva %',total_subtotal , total_iva;
+
+    factura := jsonb_set(factura,  '{facIva}', to_jsonb(total_iva::numeric));
+    factura := jsonb_set(factura, '{facTotalBaseGravada}', to_jsonb(total_subtotal::numeric));
+    factura := jsonb_set(factura, '{facSubtotal}', to_jsonb(total_subtotal::numeric));
+    factura := jsonb_set(factura, '{facTotal}', to_jsonb(total::numeric));
+
+    RAISE NOTICE 'Factura %', factura;
+insert into factura ("sisCreado", "sisHabilitado", if_dir_establecimiento, if_fecha_emision,
+                     if_identificacion_comprador, if_importe_total, if_razon_social_comprador, it_cod_doc, it_estab,
+                     it_nombre_comercial, if_numero_documento, it_pto_emision, it_razon_social, it_ruc,
+                     json_factura)
+values (CURRENT_TIMESTAMP, 'A', empresa."direccionEmpresa", CURRENT_DATE, contrato."documentoIdentidad", total,
+        concat(contrato."nombresCliente", ' ', contrato."apellidosCliente"), codigo_factura, codigo_establecimiento,
+        empresa."nombreComercial", num_documento, pto_emision, empresa."razonSocial", empresa."rucEmpresa", factura);
+return;
+END
+
+$$;
+---
+create or replace function cobros_contrato(jsonpar character varying) returns character varying
+    language plpgsql
+as
+$$
+DECLARE
+count INTEGER;
+	countCobro integer;
+    count2 INTEGER;
+    count3 INTEGER;
+    num INTEGER;
+    num2 INTEGER;
+	numCobro INTEGER;
+    num3 INTEGER;
+    id_cobro INTEGER;
+    c public.contrato;
+	peri public.periodo_contable;
+    hpc public.historico_plan_contrato;
+    cuo public.cuota;
+    monto_pagado_cuota NUMERIC;
+    dispositivo_pagado NUMERIC;
+    estado_pago_dispositivo CHAR(1);
+    rastreo_pagado NUMERIC;
+    estado_pago_rastreo CHAR(1);
+	w_ivaPorcentaje numeric;
+
+    ----- historico plan contrato -----
+    total_cobro_inscripcion NUMERIC;
+    valor_pagado_inscripcion NUMERIC;
+    abonos_capital_actual NUMERIC;
+    saldo_capital NUMERIC;
+    total_tasa_administrativa_cobrada NUMERIC;
+    total_cuotas_cobradas NUMERIC;
+    total_monto_cobrado NUMERIC;
+    total_cobro_primera_cuota NUMERIC;
+    cargos_adjudicacion NUMERIC;
+    inscripcion_esta_pagada CHAR(1);
+    total_dispositivo_cobrado NUMERIC;
+    valor_a_pagar_inscripcion NUMERIC;
+
+    ----- otras variables -----
+    cuota_a_cobrar INTEGER;
+    valor_cuota NUMERIC;
+    monto_pagado_dispositivo NUMERIC;
+    monto_pagado_rastreo NUMERIC;
+    nombreColumna character varying(255);
+    w_mesPeriodo character varying(3);
+    w_ivaPorcentale numeric(12,2);
+	w_tasaCargoAdjudicacion numeric;
+
+    ----- variables para actualizar grupo y fondo contrato -----
+    id_grupo INTEGER;
+
+    ----- tabla cobro -----
+    valor_a_cobrar NUMERIC;
+    id_contrato INTEGER;
+    array_pagos jsonb;
+    array_detalle_cobros jsonb;
+	detalle_descripcion text;
+
+    ---- tabla pagos ----
+    tipo_documento CHAR VARYING;
+    observaciones CHAR VARYING;
+    numero_documento CHAR VARYING;
+    valor NUMERIC;
+    fecha_deposito DATE;
+    detalle_pagos jsonb;
+    id_cuenta_bancaria_empresa INTEGER;
+	banco_cuenta_bancaria CHAR VARYING;
+
+    ----- tabla detalle de pagos
+    valor_detalle NUMERIC;
+    abono_capital CHAR VARYING;
+    cuota_administrativa CHAR VARYING;
+    oferta CHAR VARYING;
+    cargo_adjudicacion CHAR VARYING;
+    numero_cuota_pagos INTEGER;
+    tipo CHAR VARYING;
+    id_item_cobro_pago INTEGER;
+    id_pago INTEGER;
+
+    ----- tabla detalle de cobros
+    numero_cuota INTEGER;
+    a_cobrar NUMERIC;
+    tipo_cobro CHAR VARYING;
+    detalle_cobros TEXT;
+
+BEGIN
+    ------- sacar valores de jsonpar -------
+    valor_a_cobrar := (jsonpar::jsonb->>'valorACobrar')::NUMERIC;
+	--a_cobrar := (jsonpar::jsonb->>'aCobrar')::NUMERIC;
+    id_contrato := (jsonpar::jsonb->>'idContrato')::INTEGER;
+    array_pagos := (jsonpar::jsonb->>'pagos');
+    array_detalle_cobros := (jsonpar::jsonb->>'detalleCobros');
+    --detalle_cobros := (jsonpar::jsonb->>'descripcion');
+	--(SELECT jsonb_pretty(array_detalle_cobros));
+    ------- creacion del cobro -------
+	--recorre cobros
+	countCobro := 0;
+	numCobro := jsonb_array_length(array_detalle_cobros);
+	--RAISE NOTICE 'descripcion  %' , numCobro ;
+	IF (numCobro <> 0) THEN
+
+	-----------WHILE (countCobro < numCobro)
+	-----------		LOOP
+				detalle_descripcion := ((array_detalle_cobros->countCobro)->>'descripcion');
+				--RAISE NOTICE 'descripcion  %' , detalle_descripcion ;
+				--REALIZAMOS EL INSERT
+INSERT INTO cobro (
+    "sisActualizado","sisCreado", "sisHabilitado",
+    "valorACobrar", "detalleCobros", "idContrato")
+VALUES (
+           now(), now(), 'S',
+           valor_a_cobrar, detalle_descripcion, id_contrato
+       ) RETURNING id INTO id_cobro;
+
+-----		countCobro:=countCobro+1;
+------		end loop;
+
+
+end if;
+
+
+
+count := 0;
+    num := jsonb_array_length(array_pagos);
+	--select * from contrato
+	---### sacar valores del contrato para generar asientos contables
+	   c := (SELECT c1 FROM contrato c1 WHERE c1.id = id_contrato);
+	   RAISE NOTICE 'DDDDDDDDDD  %' , c."nombresCliente" ;
+       peri := (SELECT p FROM periodo_contable p where p."esPeriodoActual"='A');
+begin
+select "ivaPorcentaje" ,"tasaCargoAdjudicacion"
+into w_ivaPorcentaje, w_tasaCargoAdjudicacion
+from configuracion_general;
+end;
+	---###
+
+    ----- recorrer pagos -----
+    IF (num <> 0) THEN
+        WHILE (count < num)
+        LOOP
+            ----- sacar valores de array_pagos -----
+            tipo_documento := ((array_pagos->count)->>'tipoDocumento');
+            observaciones := ((array_pagos->count)->>'observaciones');
+            numero_documento := ((array_pagos->count)->>'numeroDocumento');
+            valor := ((array_pagos->count)->>'valor')::NUMERIC;
+            fecha_deposito := ((array_pagos->count)->>'fechaDeposito')::DATE;
+            detalle_pagos := ((array_pagos->count)->>'detallePago')::jsonb;
+            id_cuenta_bancaria_empresa := ((array_pagos->count)->>'idCuentaBancariaEmpresa')::INTEGER;
+			banco_cuenta_bancaria := ((array_pagos->count)->>'bancoCuentaBancaria');
+INSERT INTO pago (
+    "sisActualizado","sisCreado", "sisHabilitado",
+    "tipoDocumento", "observaciones", "numeroDocumento",
+    "valor", "fechaDeposito", "idCobro", "idCuentaBancariaEmpresa"
+) VALUES (
+             now(), now(), 'S',
+             tipo_documento, observaciones, numero_documento,
+             valor, fecha_deposito, id_cobro, id_cuenta_bancaria_empresa
+         ) RETURNING id INTO id_pago;
+
+----- recorrer detalle de pagos -----
+count2 := 0;
+            num2 := jsonb_array_length(detalle_pagos);
+            IF(num2 <> 0)THEN
+                WHILE (count2 < num2)
+                LOOP
+                    ----- sacar valores de detalle_pagos -----
+                    valor_detalle := ((detalle_pagos->count2)->>'valor')::NUMERIC;
+                    abono_capital := ((detalle_pagos->count2)->>'abonoCapital');
+                    cuota_administrativa := ((detalle_pagos->count2)->>'cuotaAdministrativa');
+                    oferta := ((detalle_pagos->count2)->>'oferta');
+                    cargo_adjudicacion := ((detalle_pagos->count2)->>'cargoAdjudicacion');
+                    numero_cuota_pagos := ((detalle_pagos->count2)->>'numeroCuota')::INTEGER;
+                    tipo := ((detalle_pagos->count2)->>'tipo');
+                    id_item_cobro_pago := ((detalle_pagos->count2)->>'idItemCobroPago')::INTEGER;
+INSERT INTO detalle_pago (
+    "sisActualizado","sisCreado", "sisHabilitado",
+    "valor",
+    "oferta", "cargoAdjudicacion", "numeroCuota",
+    "tipo", "idItemCobroPago", "idPago"
+) VALUES (
+             now(), now(), 'S',
+             valor_detalle,
+             oferta, cargo_adjudicacion, numero_cuota_pagos,
+             tipo, id_item_cobro_pago, id_pago
+         );
+count2 := count2 + 1;
+
+					raise notice  'value of valor : %', valor_detalle;
+					raise notice  'value of tipo : %', tipo;
+END LOOP;
+END IF;
+---###### Generacion de asientos contables
+ 	perform public.asiento_cobros(id_contrato, id_cobro, c."estado" , peri.id, peri."anio", peri."fechaInicio",
+				      c."nombresCliente"::text, c."cuotaACobrar", fecha_deposito, id_pago, w_ivaPorcentaje::numeric(12,2), banco_cuenta_bancaria);
+
+count:=count+1;
+END LOOP;
+END IF;
+
+    ----- sacar datos de tablas relacionadas -----
+    c := (SELECT c1 FROM contrato c1 WHERE c1.id = id_contrato);
+    hpc := (SELECT hpc1 FROM historico_plan_contrato hpc1 WHERE hpc1."idContrato" = c."id" ORDER BY hpc1."sisCreado" DESC LIMIT 1);
+
+    ----- sacar datos para actualizar del historico de plan contrato -----
+    total_cobro_inscripcion := hpc."totalCobroInscripcion";
+    valor_pagado_inscripcion := hpc."valorPagadoInscripcion";
+    abonos_capital_actual := hpc."abonosCapitalActual";
+    saldo_capital := hpc."saldoCapital";
+    total_tasa_administrativa_cobrada := hpc."totalTasaAdministrativaCobrada";
+    total_cuotas_cobradas := hpc."totalCuotasCobradas";
+    total_monto_cobrado := coalesce(hpc."totalMontoCobrado",0);
+    total_cobro_primera_cuota := coalesce(hpc."totalCobroPrimeraCuota",0);
+    cargos_adjudicacion := hpc."cargosAdjudicacion";
+    inscripcion_esta_pagada := hpc."inscripcionEstaPagada";
+
+    ----- valores iniciales para actualizar el historico de plan contrato -----
+    valor_a_pagar_inscripcion := hpc."totalInscripcionPlan" - hpc."valorDsctoInscripcion";
+    monto_pagado_cuota := 0;
+    dispositivo_pagado := 0;
+    rastreo_pagado := 0;
+    monto_pagado_dispositivo := 0;
+    monto_pagado_rastreo := 0;
+
+    ----- recorrer detalle de cobros -----
+    count3 := 0;
+    num3 := jsonb_array_length(array_detalle_cobros);
+    IF (num3 <> 0) THEN
+        WHILE (count3 < num3)
+        LOOP
+            ----- sacar valores de array_detalle_cobros -----
+            numero_cuota := ((array_detalle_cobros->count3)->>'noCuota')::INTEGER;
+            a_cobrar := ((array_detalle_cobros->count3)->>'aCobrar')::NUMERIC;
+            tipo_cobro := ((array_detalle_cobros->count3)->>'tipo');
+            ----- actualizar cuotas pagadas -----
+            cuo := (SELECT cuo1 FROM cuota cuo1 WHERE cuo1."numeroCuota" = numero_cuota AND cuo1."idHistoricoPlanContrato" = hpc.id);
+            total_dispositivo_cobrado := (SELECT "totalDispositivoCobrado" FROM historico_plan_contrato WHERE id = hpc.id);
+            valor_cuota := coalesce(cuo."valorCuota",0) + coalesce(cuo.dispositivo,0) + coalesce(cuo.rastreo,0);
+            estado_pago_dispositivo := 'N';
+            estado_pago_rastreo := 'N';
+			raise notice  'value of valor_cuota : %', valor_cuota;
+			raise notice  'value of valor_a_pagar_inscripcion : %', valor_a_pagar_inscripcion;
+			raise notice  'value of a_cobrar : %', a_cobrar;
+
+			raise notice  'value of cuo."valorPagadoCuota ORIGINAL" : %', cuo."valorPagadoCuota";
+            IF (tipo_cobro = 'I') THEN
+                inscripcion_esta_pagada := CASE WHEN a_cobrar = valor_a_pagar_inscripcion THEN 'S' ELSE 'N' END;
+                total_cobro_inscripcion := total_cobro_inscripcion + a_cobrar;
+                valor_pagado_inscripcion := valor_pagado_inscripcion + a_cobrar;
+			--	RETURN '{"correcto":false, "message":" entro I"}',total_cobro_inscripcion::text;
+                IF(inscripcion_esta_pagada = 'S')THEN
+UPDATE contrato SET "cuotaACobrar" = numero_cuota + 1 WHERE id = id_contrato;
+END IF;
+END IF;
+
+            IF (tipo_cobro = 'CA') THEN
+                monto_pagado_cuota := round((coalesce(monto_pagado_cuota,0) + coalesce(a_cobrar,0)),2);
+                total_tasa_administrativa_cobrada := coalesce(total_tasa_administrativa_cobrada,0) + coalesce(a_cobrar,0);
+				raise notice  'value of monto_pagado_cuota : %', monto_pagado_cuota;
+				raise notice  'value of cuo."valorPagadoCuota CA" : %', cuo."valorPagadoCuota";
+				 raise notice  'value of a_cobrar : %', a_cobrar;
+				-- RETURN '{"correcto":false, "message":" entro CA"}',monto_pagado_cuota::text;
+
+UPDATE cuota SET "valorPagadoCuota"= (cuo."valorPagadoCuota" + a_cobrar) WHERE "numeroCuota" = numero_cuota AND "idHistoricoPlanContrato" = hpc.id;
+END IF;
+
+
+			IF (tipo_cobro = 'AC') THEN
+                monto_pagado_cuota := round((coalesce(monto_pagado_cuota,0) + coalesce(a_cobrar,0)),2);
+                abonos_capital_actual := coalesce(abonos_capital_actual,0) + coalesce(a_cobrar,0);
+                saldo_capital := coalesce(saldo_capital,0) - coalesce(a_cobrar,0);
+				raise notice  'value of monto_pagado_cuota : %', monto_pagado_cuota;
+				raise notice  'value of cuo."valorPagadoCuota AC" : %', cuo."valorPagadoCuota";
+				 raise notice  'value of a_cobrar : %', a_cobrar;
+				-- RETURN '{"correcto":false, "message":" entro AC"}',monto_pagado_cuota::text;
+UPDATE cuota SET "valorPagadoCuota"= (cuo."valorPagadoCuota" + a_cobrar) WHERE "numeroCuota" = numero_cuota AND "idHistoricoPlanContrato" = hpc.id;
+END IF;
+
+            IF (tipo_cobro = 'D') THEN
+                monto_pagado_cuota := coalesce(monto_pagado_cuota,0) + coalesce(a_cobrar,0);
+                monto_pagado_dispositivo := coalesce(cuo."valorPagadoDispositivo",0) + coalesce(a_cobrar,0);
+				raise notice  'value of monto_pagado_cuota : %', monto_pagado_cuota;
+				-- RETURN '{"correcto":false, "message":" entro D"}',monto_pagado_cuota::text;
+                IF(monto_pagado_dispositivo = cuo.dispositivo) THEN
+                    total_dispositivo_cobrado := coalesce(total_dispositivo_cobrado,0) + 1;
+                    estado_pago_dispositivo := 'S';
+                    monto_pagado_dispositivo := 0;
+END IF;
+UPDATE cuota SET "dispositivoEstaPagado" = estado_pago_dispositivo, "valorPagadoDispositivo"= monto_pagado_dispositivo WHERE "numeroCuota" = numero_cuota AND "idHistoricoPlanContrato" = hpc.id;
+END IF;
+            IF (tipo_cobro = 'R') THEN
+                monto_pagado_cuota := coalesce(monto_pagado_cuota,0) + coalesce(a_cobrar,0);
+                monto_pagado_rastreo := coalesce(cuo."valorPagadoRastreo",0) + coalesce(a_cobrar,0);
+				raise notice  'value of monto_pagado_cuota : %', monto_pagado_cuota;
+				-- RETURN '{"correcto":false, "message":" entro R"}',monto_pagado_cuota::text;
+                IF(monto_pagado_rastreo = cuo.rastreo) THEN
+                    estado_pago_rastreo := 'S';
+                    monto_pagado_rastreo := 0;
+END IF;
+UPDATE cuota SET "rastreoEstaPagado" = estado_pago_rastreo, "valorPagadoDispositivo"= monto_pagado_rastreo WHERE "numeroCuota" = numero_cuota AND "idHistoricoPlanContrato" = hpc.id;
+END IF;
+            IF (tipo_cobro = 'CAD') THEN
+                cargos_adjudicacion := cargos_adjudicacion + a_cobrar;
+              --  UPDATE historico_plan_contrato SET "cargosAdjudicacion" = cargos_adjudicacion WHERE id = hpc.id;
+				IF (cargos_adjudicacion >= ((hpc."capitalTotal" * w_tasaCargoAdjudicacion)/100)) then
+update contrato set estado_contrato='PAB' where id=id_contrato; ---  estado preadjudicado buscando
+END IF;
+			-- EJECUTAMOS EL ASIENTO POR COBRO DE ADJUDICACION
+				perform public.asiento_cobros_externo(id_contrato, id_cobro, c.estado , peri.id, peri."anio", peri."fechaInicio",
+				      c."nombresCliente", numero_cuota, "fechaDeposito", id_pago, w_ivaPorcentaje, a_cobrar, tipo_cobro, banco_cuenta_bancaria);
+
+
+END IF;
+			raise notice  'value of monto_pagado_cuota : %', monto_pagado_cuota;
+			raise notice  'value of valor_cuota : %', valor_cuota;
+			raise notice  'value of numero_cuota : %', numero_cuota;
+			raise notice  'value of hpc."valorDsctoPrimeraCuota" : %', hpc."valorDsctoPrimeraCuota";
+			raise notice  'value of total_monto_cobrado : %', total_monto_cobrado;
+            IF (monto_pagado_cuota = COALESCE(valor_cuota,0) AND numero_cuota <> 1) THEN
+
+
+UPDATE cuota SET "estaPagado" = 'S' WHERE "numeroCuota" = numero_cuota AND "idHistoricoPlanContrato" = hpc.id;
+UPDATE contrato SET "cuotaACobrar" = coalesce(numero_cuota,0) + 1 WHERE id = id_contrato;
+raise notice  'value of id_contrato : %', id_contrato;
+				if hpc."numCuotasAbajoHaciaArriba"=0 then
+				 total_cuotas_cobradas := coalesce(numero_cuota,0);
+else
+				  total_cuotas_cobradas := coalesce(total_cuotas_cobradas,0);
+end if;
+
+                cuota_a_cobrar := coalesce(numero_cuota,0) + 1;
+                total_monto_cobrado := coalesce(total_monto_cobrado,0) + coalesce(monto_pagado_cuota,0);
+                monto_pagado_cuota := 0;
+				raise notice  'value of total_monto_cobrado : %', total_monto_cobrado;
+				raise notice  'value of total_cuotas_cobradas : %', total_cuotas_cobradas;
+				raise notice  'value of valor_cuota : %', valor_cuota;
+				raise notice  'value of numero_cuota : %', numero_cuota;
+				raise notice  'value of cuota_a_cobrar : %', cuota_a_cobrar;
+			--	RETURN '{"correcto":false, "message":" entro 1"}',monto_pagado_cuota::text ;
+           ELSEIF (coalesce(monto_pagado_cuota,0) < (valor_cuota - coalesce(hpc."valorDsctoPrimeraCuota",0)) AND numero_cuota = 1) THEN
+			-- RETURN '{"correcto":false, "message":" entro 2"}',monto_pagado_cuota::text ;
+
+                total_cobro_primera_cuota := coalesce(total_cobro_primera_cuota,0) + coalesce(monto_pagado_cuota,0);
+				total_monto_cobrado := coalesce(total_monto_cobrado,0) + coalesce(total_cobro_primera_cuota,0);
+				if hpc."numCuotasAbajoHaciaArriba"=0 then
+				 total_cuotas_cobradas := coalesce(numero_cuota,0);
+else
+				  total_cuotas_cobradas := coalesce(total_cuotas_cobradas,0);
+end if;
+
+            ELSEIF (coalesce(monto_pagado_cuota,0) = (c."cuotaActual" - coalesce(hpc."valorDsctoPrimeraCuota",0)) AND numero_cuota = 1) THEN
+		  		raise notice  'value of monto_pagado_cuota : %', monto_pagado_cuota;
+				raise notice  'value of total_cuotas_cobradas : %', total_cuotas_cobradas;
+				raise notice  'value of valor_cuota : %', c."cuotaActual" ;
+				raise notice  'value of RESTA : %', (c."cuotaActual"  - coalesce(hpc."valorDsctoPrimeraCuota",0));
+			  --RETURN '{"correcto":false, "message":" entro 3"}',monto_pagado_cuota::text ;
+
+UPDATE cuota SET "estaPagado" = 'S' WHERE "numeroCuota" = numero_cuota AND "idHistoricoPlanContrato" = hpc.id;
+UPDATE contrato SET "cuotaACobrar" = coalesce(numero_cuota,0) + 1 WHERE id = id_contrato;
+total_cobro_primera_cuota := coalesce(monto_pagado_cuota,0);
+				if hpc."numCuotasAbajoHaciaArriba"=0 then
+				total_monto_cobrado :=  coalesce(total_cobro_primera_cuota,0); --- - coalesce(hpc."valorTasaAdministrativa",0);
+				total_cuotas_cobradas := coalesce(numero_cuota,0);
+else
+				total_monto_cobrado := coalesce(total_monto_cobrado,0) + coalesce(total_cobro_primera_cuota,0)
+										- coalesce(hpc."valorTasaAdministrativa",0) - round((coalesce(hpc."valorTasaAdministrativa",0)* (w_ivaPorcentaje/100)),2);
+				 total_cuotas_cobradas := coalesce(total_cuotas_cobradas,0) + 1;
+end if;
+				--total_monto_cobrado := coalesce(total_monto_cobrado,0) + coalesce(total_cobro_primera_cuota,0);
+                 monto_pagado_cuota := 0;
+
+				/* ELSE  borrar despues WH
+				 raise notice  'value of monto_pagado_cuota : %', monto_pagado_cuota;
+				raise notice  'value of total_cuotas_cobradas : %', total_cuotas_cobradas;
+				raise notice  'value of valor_cuota : %', valor_cuota;
+				raise notice  'value of RESTA : %', (valor_cuota - coalesce(hpc."valorDsctoPrimeraCuota",0));
+			  RETURN '{"correcto":false, "message":" entro 3"}',monto_pagado_cuota::text ;
+				 */
+END IF;
+
+            ----- actualizar historico plan contrato -----
+UPDATE historico_plan_contrato
+SET
+    "valorPagadoInscripcion" = valor_pagado_inscripcion,
+    "abonosCapitalActual" = abonos_capital_actual,
+    "saldoCapital" = saldo_capital,
+    "totalTasaAdministrativaCobrada" = total_tasa_administrativa_cobrada,
+    "totalCuotasCobradas" = total_cuotas_cobradas,
+    "totalMontoCobrado" = total_monto_cobrado,
+    "totalCobroPrimeraCuota" = total_cobro_primera_cuota,
+    "cargosAdjudicacion" = cargos_adjudicacion,
+    "inscripcionEstaPagada" = inscripcion_esta_pagada,
+    "totalDispositivoCobrado" = total_dispositivo_cobrado
+WHERE id = hpc.id;
+
+count3 := count3 + 1;
+END LOOP;
+        ----##### Registro de factura
+        perform public.registrar_factura(id_pago, id_contrato, jsonpar);
+END IF;
+
+    ------- actializar fondo del contrato -------
+  ---  PERFORM actualizar_fondo_contrato(id_contrato);
+
+    ------- actualizar monto meta del grupo -------
+    id_grupo := (SELECT cg."idGrupo" FROM cliente_en_grupo cg INNER JOIN contrato c1 ON c1."idClienteEnGrupo" = cg."id" WHERE c1.id = id_contrato);
+ ---   PERFORM actualizar_monto_meta(id_grupo);
+
+RETURN '{"correcto":true, "message":"El cobro se realizo correctamente"}';
+ROLLBACK;
+END;
+
+$$;
+
+---
+
+create or replace function obtener_mes(numero integer) returns character varying
+    language plpgsql
+as
+$$
+DECLARE
+mes varchar(255);
+
+BEGIN
+        mes := (CASE
+            when numero = 1 then 'enero'
+            when numero = 2 then 'febrero'
+            when numero = 3 then 'marzo'
+            when numero = 4 then 'abril'
+            when numero = 5 then  'mayo'
+            when numero = 6 then  'junio'
+            when numero = 7 then  'julio'
+            when numero = 8 then  'agosto'
+            when numero = 9 then  'septiembre'
+            when numero = 10 then 'octubre'
+            when numero = 11 then  'noviembre'
+            when numero = 12 then 'diciembre'
+        END);
+return mes;
+END
+$$;
+
+---
+create or replace function generar_balance_comprobacion(anio_periodo integer, cuenta_inicio integer, cuenta_fin integer, id_mes_inicio integer, id_mes_fin integer) returns text
+    language plpgsql
+as
+$$
+DECLARE
+consulta text;
+        id_periodo integer;
+        mes_inicio varchar(255);
+        mes_fin varchar(255);
+        mes_anterior varchar(255);
+        balance jsonb;
+        result text;
+BEGIN
+
+
+        /*for counter in mes_inicio..coalesce(mes_fin, 0) + 1 loop
+	        raise notice 'counter: %', counter;
+
+	        mes_actual:= (select public.obtener_mes(counter));
+	        mes_anterior:= (select public.obtener_mes(counter));
+	        /*operador:= case when filtro_suma_debito != '' then '+' else '' end;
+	        filtro_suma_debito := concat(filtro_suma_debito, operador,  'coalesce("'||mes_actual||'Debito", 0)');
+	        filtro_suma_credito := concat(filtro_suma_credito, operador,  'coalesce("'||mes_actual||'Credito", 0)');*/
+	        RAISE NOTICE 'filtro final  %', filtro_suma_debito;
+
+	    end loop;*/
+
+        /*consulta := 'select nombre, '
+                        ||filtro_suma_debito||' debito, '
+                        ||filtro_suma_credito||' credito '
+                        --||filtro_suma_credito||' credito '
+                        ||' from cuenta_contable cc where cc."codigoCuentaContable" in (''1'',''2'')';
+
+         RAISE NOTICE 'query %', consulta;*/
+select id into id_periodo from periodo_contable pc where pc.anio = anio_periodo;
+mes_inicio:= (select public.obtener_mes(id_mes_inicio));
+        mes_fin:= (select public.obtener_mes(id_mes_fin));
+        mes_anterior:= (select public.obtener_mes(case when id_mes_inicio-1 = 0 then 12 else id_mes_inicio -1 end));
+        RAISE NOTICE 'meses actual %, mes anterior %, mes final %, idPeriodo %  ', mes_inicio, mes_anterior, mes_fin, id_periodo;
+
+        consulta := 'select to_jsonb(array_agg(j)) from (select cc.nombre nombre, cc.identificador codigo,'
+                        '"'||mes_anterior||'Saldo" as saldoInicial, '
+                        '"'||mes_fin||'Saldo" as saldoFinal, '
+                        '"'||mes_fin||'Debito" as debitos, '
+                        '"'||mes_fin||'Credito" as creditos '
+                        ||' from cuenta_contable cc  where cast(cc.identificador as text)  ~ (''^['||cuenta_inicio||'-'||cuenta_fin||']'')) j';
+
+         RAISE NOTICE 'query %', consulta;
+
+EXECUTE consulta INTO balance;
+
+--SELECT jsonb_build_object('balance' ,balance, 'total', jsonb_array_length(balance)) INTO balance;
+SELECT jsonb_build_array(balance, jsonb_array_length(balance)) INTO balance;
+
+SELECT jsonb_pretty(balance) INTO result;
+
+RETURN result;
+
+end;
+$$;
+
+---
+
+create or replace function generar_balance_general(anio_periodo integer, identificador_cuenta character varying, tipo_movimiento character varying, identificador_nivel integer) returns text
+    language plpgsql
+as
+$$
+DECLARE
+consulta           text;
+    id_periodo         integer;
+    mes_inicio         varchar(255);
+    mes_fin            varchar(255);
+    mes_anterior       varchar(255);
+    balance            jsonb := jsonb_build_object('balance', jsonb_build_array());
+    --balance            jsonb := jsonb_build_object();
+   -- balance            jsonb := jsonb_build_object();
+    result             text  := '';
+    total_cuenta_mayor numeric;
+    json_padre         jsonb;
+    json_hijo          jsonb;
+    registro_padre     record;
+    counter            numeric;
+    ruta               text[];
+    ruta2               text;
+    el jsonb;
+BEGIN
+
+select pc.id into id_periodo from periodo_contable pc where pc.anio = anio_periodo;
+
+/*    select cc.identificador, cc.nombre, cc.nivel, coalesce(sum(cc."actualSaldo"), 0) saldo
+    from cuenta_contable cc
+    where cast(cc.identificador as text) ~ ('^[1-3]')
+      and cc."idPeriodoContable" = id_periodo
+      and cc.movimiento = tipo_movimiento
+      and cc.nivel = identificador_nivel
+    group by cc.identificador, cc.nombre, cc.identificador, cc.nivel
+    order by cc.identificador asc;*/
+
+
+/*    for n in 1..5
+        loop
+            for registro_padre in select cc.identificador,
+                                         cc.nombre,
+                                         cc.nivel,
+                                         coalesce(sum(cc."actualSaldo"), 0) saldo
+                                  from cuenta_contable cc
+                                  where cast(cc.identificador as text) like '' || identificador_cuenta || '%'
+                                    and cc."idPeriodoContable" = 2
+                                    and cc.movimiento = 'M'
+                                    and cc.nivel = n
+                                  group by cc.identificador, cc.nombre, cc.identificador, cc.nivel
+                                  order by cc.identificador asc
+                loop
+
+                    json_padre := json_build_object('identificador', registro_padre.identificador, 'nombre',
+                                                    registro_padre.nombre, 'saldo', 0, 'nivel', registro_padre.nivel,
+                        'cuentasMayor', jsonb_build_array(),
+                                                    'cuentasDeudoras', jsonb_build_array());
+
+                    json_hijo := (select to_jsonb(array_agg(j))
+                                  from (select cc.identificador,
+                                               cc.nombre,
+                                               cc.nivel,
+                                               coalesce(sum(cc."actualSaldo"), 0) saldo
+                                        from cuenta_contable cc
+                                        where cast(cc.identificador as text) like
+                                              '' || registro_padre.identificador || '%'
+                                          and cc."idPeriodoContable" = 2
+                                          and cc.movimiento = 'A'
+                                          and cc.nivel = n + 1
+                                        group by cc.identificador, cc.nombre, cc.identificador, cc.nivel
+                                        order by cc.identificador asc) j);
+
+
+                    IF json_hijo IS NOT NULL THEN
+                        select sum(j.saldo::numeric)
+                        into total_cuenta_mayor
+                        from (SELECT jsonb_path_query(json_hijo, '$[*].saldo') saldo) j;
+                        json_padre := jsonb_set(json_padre, '{cuentasDeudoras}', json_hijo, true);
+                        json_padre := jsonb_set(json_padre, '{saldo}', to_jsonb(total_cuenta_mayor), true);
+                    end if;
+
+
+                    --RAISE NOTICE 'identificador %, cuenta %, nivel %, saldo % ', registro_padre.identificador, registro_padre.nombre, registro_padre.nivel, registro_padre.saldo;
+                    RAISE NOTICE 'json % ', json_padre;
+
+                    counter := jsonb_array_length((balance ->> 'balance')::jsonb);
+                    ruta := '{balance,' || jsonb_array_length((balance ->> 'balance')::jsonb) + 1 || '}';
+--                    RAISE NOTICE 'path a buscar %', ruta;
+                    balance := jsonb_insert(balance, ruta, json_padre, true);
+
+                    /*if n = 1 then
+                        balance := jsonb_insert(balance, '{balance}', json_padre, true);
+                    else
+                         balance := jsonb_set(balance, '{cuentasMayor,1}', json_padre, true);
+                    end if;*/
+
+                end loop;
+
+
+
+
+
+            RAISE NOTICE 'balance % ', balance;
+        end loop;
+*/
+
+
+
+
+for n in reverse 5..1
+        loop
+            for registro_padre in select cc.identificador,
+                                         cc.nombre,
+                                         cc.nivel,
+                                         coalesce(sum(cc."actualSaldo"), 0) saldo
+                                  from cuenta_contable cc
+                                  where cast(cc.identificador as text) like '' || identificador_cuenta || '%'
+                                    and cc."idPeriodoContable" = id_periodo
+                                    and cc.movimiento = 'M'
+                                    and cc.nivel = n
+                                    and cc."sisHabilitado" = 'A'
+                                  group by cc.identificador, cc.nombre, cc.identificador, cc.nivel
+                                  order by cc.identificador asc
+                                      loop
+
+                    json_padre := json_build_object('identificador', registro_padre.identificador, 'nombre',
+                                                    registro_padre.nombre, 'saldo', 0, 'nivel', registro_padre.nivel,
+                        'cuentasMayor', jsonb_build_array(),
+                                                    'cuentasDeudoras', jsonb_build_array());
+
+json_hijo := (select to_jsonb(array_agg(j))
+                                  from (select cc.identificador,
+                                               cc.nombre,
+                                               cc.nivel,
+                                               coalesce(sum(cc."actualSaldo"), 0) saldo
+                                        from cuenta_contable cc
+                                        where cast(cc.identificador as text) like
+                                              '' || registro_padre.identificador || '%'
+                                          and cc."idPeriodoContable" = id_periodo
+                                          and cc.movimiento = 'A'
+                                          and cc.nivel = n - 1
+                                        and cc."sisHabilitado" = 'A'
+                                        group by cc.identificador, cc.nombre, cc.identificador, cc.nivel
+                                        order by cc.identificador asc) j);
+
+
+                    IF json_hijo IS NOT NULL THEN
+select sum(j.saldo::numeric)
+into total_cuenta_mayor
+from (SELECT jsonb_path_query(json_hijo, '$[*].saldo') saldo) j;
+json_padre := jsonb_set(json_padre, '{cuentasDeudoras}', json_hijo, true);
+                        json_padre := jsonb_set(json_padre, '{saldo}', to_jsonb(total_cuenta_mayor), true);
+end if;
+
+
+                    --RAISE NOTICE 'identificador %, cuenta %, nivel %, saldo % ', registro_padre.identificador, registro_padre.nombre, registro_padre.nivel, registro_padre.saldo;
+                    RAISE NOTICE 'json % ', json_padre;
+
+                    counter := jsonb_array_length((balance ->> 'balance')::jsonb);
+                    ruta := '{balance,' || jsonb_array_length((balance ->> 'balance')::jsonb) + 1 || '}';
+--                    RAISE NOTICE 'path a buscar %', ruta;
+                    balance := jsonb_insert(balance, ruta, json_padre, true);
+
+                    /*if n = 1 then
+                        balance := jsonb_insert(balance, '{balance}', json_padre, true);
+                    else
+                         balance := jsonb_set(balance, '{cuentasMayor,1}', json_padre, true);
+                    end if;*/
+
+end loop;
+
+
+
+
+
+
+            RAISE NOTICE 'balance % ', balance;
+end loop;
+
+select jsonb_pretty((balance->>'balance')::jsonb) into result;
+
+
+/*      FOR el IN SELECT * FROM json_array_elements((balance ->> 'balance')::json) LOOP
+
+          counter := el->>'nivel'::numeric;
+          balance := jsonb_set(json_padre, '{saldo}', to_jsonb(total_cuenta_mayor), true);
+
+          select sum(j.saldo::numeric)
+                        into total_cuenta_mayor
+                        from (SELECT jsonb_path_query(json_hijo, '$[*].saldo') saldo) j;
+
+          RAISE NOTICE 'output from space %', el;
+      END LOOP;*/
+
+
+
+
+/*    for x in reverse 6..3 loop
+        ruta2 := '$.balance[*] ? (@.nivel == ' || x - 1 || ')';
+        ruta := '{balance,'||x - 2||',saldo}';
+        RAISE NOTICE 'path a actualizar %', ruta;
+        --RAISE NOTICE 'JSON %', jsonb_path_query(balance,'$.balance[*] ? (@.nivel == $n)','{ "n" : '|| x ||' }');
+
+        --select z.json into json_hijo from (select jsonb_path_query(balance::json,'$.balance[*] ? (@.nivel == '|| x ||')') json) z;
+        --RAISE NOTICE 'suma % ', json_hijo;
+
+        select sum(j.saldo::numeric)
+                        into total_cuenta_mayor
+                        from (SELECT jsonb_path_query(balance, /*'$.balance[*] ? (@.nivel == 1)'*/ ruta2::jsonpath)::jsonb ->> 'saldo' saldo) j;
+
+        RAISE NOTICE 'total actualizar en padre %', total_cuenta_mayor;
+
+        balance := jsonb_set(balance, ruta, to_jsonb(total_cuenta_mayor), true);
+
+
+    end loop;*/
+
+RAISE NOTICE 'balance final % ', result;
+
+
+    /*for n in reverse 4..1
+        loop
+
+            for registro_padre in select cc.identificador,
+                                         cc.nombre,
+                                         cc.nivel,
+                                         coalesce(sum(cc."actualSaldo"), 0) saldo
+                                  from cuenta_contable cc
+                                  where cast(cc.identificador as text) like '' || identificador_cuenta || '%'
+                                    and cc."idPeriodoContable" = 2
+                                    and cc.movimiento = 'M'
+                                    and cc.nivel = n
+                                  group by cc.identificador, cc.nombre, cc.identificador, cc.nivel
+                                  order by cc.identificador asc
+                loop
+                json_padre := json_build_object('identificador', registro_padre.identificador, 'nombre',
+                                                    registro_padre.nombre, 'saldo', 0, 'nivel', registro_padre.nivel,
+                                                    'cuentasAdeudoras', jsonb_build_array());
+
+                    json_hijo := (select to_jsonb(array_agg(j))
+                                      from (select cc.identificador,
+                                                   cc.nombre,
+                                                   cc.nivel,
+                                                   coalesce(sum(cc."actualSaldo"), 0) saldo
+                                            from cuenta_contable cc
+                                            where cast(cc.identificador as text) like
+                                                  '' || registro_padre.identificador || '%'
+                                              and cc."idPeriodoContable" = 2
+                                              and cc.movimiento = 'A'
+                                              and cc.nivel = n + 1
+                                            group by cc.identificador, cc.nombre, cc.identificador, cc.nivel
+                                            order by cc.identificador asc) j);
+
+                 IF json_hijo IS NOT NULL THEN
+                        select sum(j.saldo::numeric)
+                        into total_cuenta_mayor
+                        from (SELECT jsonb_path_query(json_hijo, '$[*].saldo') saldo) j;
+                        json_padre := jsonb_set(json_padre, '{cuentasAdeudoras}', json_hijo, true);
+                        json_padre := jsonb_set(json_padre, '{saldo}', to_jsonb(total_cuenta_mayor), true);
+                    end if;
+
+
+                    --RAISE NOTICE 'identificador %, cuenta %, nivel %, saldo % ', registro_padre.identificador, registro_padre.nombre, registro_padre.nivel, registro_padre.saldo;
+                    RAISE NOTICE 'json % ', json_padre;
+
+
+                end loop;
+        end loop;
+*/
+    /*for registro in select cc.identificador, cc.nombre, cc.nivel, coalesce(sum(cc."actualSaldo"), 0) saldo
+                    from cuenta_contable cc
+                    where cast(cc.identificador as text) ~ (identificador_cuenta)
+                      and cc."idPeriodoContable" = 2
+                      and cc.movimiento = tipo_movimiento
+                      and cc.nivel = identificador_nivel
+                    group by cc.identificador, cc.nombre, cc.identificador, cc.nivel
+                    order by cc.identificador asc
+        loop
+        RAISE NOTICE 'identificador %, cuenta %, nivel % ', registro.identificador, registro.nombre, registro.nivel;
+
+        perform public.generar_balance_general(2023, '^['||SUBSTRING(registro.identificador::text, 1, 2)||']', 'A', 2);
+
+        end loop;*/
+
+RETURN result;
+
+end;
+$$;
+
+---
+
+create or replace function calcular_decimo_cuarto(fecha_inicio date, fecha_fin date, id_trabajador integer, id_periodo integer, tipo character varying) returns text
+    language plpgsql
+as
+$$
+DECLARE
+dias_laborales_anio     integer;
+    sueldo_basico           numeric;
+    valor_real              numeric;
+    otros_ingresos          numeric;
+    valor_mes1              numeric;
+    valor_mes2              numeric;
+    valor_mes3              numeric;
+    valor_mes4              numeric;
+    valor_mes5              numeric;
+    valor_mes6              numeric;
+    valor_mes7              numeric;
+    valor_mes8              numeric;
+    valor_mes9              numeric;
+    valor_mes10             numeric;
+    valor_mes11             numeric;
+    valor_mes12             numeric;
+    valor_prestamos_empresa numeric;
+    total_pagar             numeric;
+    total_ingresos          numeric;
+    prestamos               public.prestamo;
+    id_historia_laboral integer;
+    periodo         public.periodo_laboral;
+    anio_periodo integer;
+    id_rol_pago_dic integer;
+    reporte                 jsonb;
+    result                  TEXT;
+BEGIN
+    dias_laborales_anio :=
+            (select CASE WHEN (fecha_fin - fecha_inicio) > 360 then 360 else fecha_fin - fecha_inicio end);
+    --periodo := (select * from periodo_laboral pl where pl.id = id_periodo);
+select pl.anio into anio_periodo from periodo_laboral pl where pl.id = id_periodo;
+id_rol_pago_dic := (select rp.id from periodo_laboral pl inner join rol_pago rp on pl.id = rp."idPeriodoLaboral" where pl.mes = 'DIC' and pl.anio = anio_periodo );
+select cg."sueldoBasico" into sueldo_basico from configuracion_general cg limit 1;
+valor_real := (sueldo_basico * dias_laborales_anio) / 360;
+    otros_ingresos := valor_real;
+    valor_mes1 := sueldo_basico / 12;
+    valor_mes2 := sueldo_basico / 12;
+    valor_mes3 := sueldo_basico / 12;
+    valor_mes4 := sueldo_basico / 12;
+    valor_mes5 := sueldo_basico / 12;
+    valor_mes6 := sueldo_basico / 12;
+    valor_mes7 := sueldo_basico / 12;
+    valor_mes8 := sueldo_basico / 12;
+    valor_mes9 := sueldo_basico / 12;
+    valor_mes10 := sueldo_basico / 12;
+    valor_mes11 := sueldo_basico / 12;
+    valor_mes12 := sueldo_basico / 12;
+    total_ingresos := (valor_mes1 + valor_mes2+ valor_mes3 + valor_mes4 + valor_mes5 + valor_mes6 + valor_mes7 + valor_mes8 + valor_mes9 + valor_mes10 + valor_mes11 + valor_mes12);
+
+    --id_historia_laboral := (select hl.id from historial_laboral hl where hl."idTrabajador" = id_trabajador and hl."sisHabilitado" = 'A');
+    valor_prestamos_empresa := (select coalesce(ap."valorCuota", 0)
+                                from prestamo p
+                                         inner join abono_prestamo ap on p.id = ap."idPrestamo"
+                                where p."idTrabajador" = id_trabajador
+                                  and p."modalidadDescuento" = 'DCT'
+                                  and p.estado = 'PNT'
+                                order by p."fechaPrestamo" desc
+                                limit 1);
+
+    total_pagar := total_ingresos - valor_prestamos_empresa;
+
+    reporte := jsonb_build_object('diasLaboralesAnio', dias_laborales_anio, 'valorReal', valor_real, 'valorNominal',
+                                  sueldo_basico, 'otrosIngresos', valor_real,
+                                  'valorMes1', valor_mes1, 'valorMes2', valor_mes2, 'valorMes3', valor_mes3,
+                                  'valorMes4', valor_mes4, 'valorMes5', valor_mes5, 'valorMes6', valor_mes6,
+                                  'valorMes7', valor_mes7, 'valorMes8', valor_mes8, 'valorMes9', valor_mes9,
+                                  'valorMes10', valor_mes10, 'valor_mes11', valor_mes10, 'valorMes11', valor_mes11,
+                                  'valorMes12', valor_mes12, 'totalIngresos', total_ingresos, 'totalEgresos',
+                                  valor_prestamos_empresa, 'totalPagar', total_pagar, 'prestamosEmpresas',
+                                  valor_prestamos_empresa);
+
+    RAISE NOTICE 'reporte %', reporte;
+    RAISE NOTICE 'VALOR A GUARDAR total a pagar %, mes 12 % , en el rol de pago con id %', total_pagar, valor_mes12, id_rol_pago_dic;
+
+    if tipo = 'A' then
+update rol_pago rl
+set "ProvDecimoCuarto" = valor_mes12, "acumuladoDecimoTercero"= total_pagar
+where rl.id = id_rol_pago_dic;
+else
+update rol_pago rl
+set "pagoDecimoCuartoMes" = total_pagar, "ProvDecimoCuarto" = valor_mes12
+where rl.id = id_rol_pago_dic;
+end if;
+
+
+SELECT jsonb_pretty(reporte) INTO result;
+RETURN result;
+END;
+
+$$;
+
+---
+
+create or replace function calcular_utilidades(fecha_inicio date, fecha_fin date, id_periodo integer, id_pago_uno integer) returns text
+    language plpgsql
+as
+$$
+DECLARE
+result                         TEXT;
+    reporte jsonb := jsonb_build_object('utilidades', jsonb_build_array());
+    reporte_item jsonb;
+    utilidad                       numeric;
+    valor_4                        numeric;
+    valor_5                        numeric;
+    valor_nominal                  numeric;
+    valor_real                     numeric;
+    registro_trabajador            record;
+    total_dias_trabajados_anio     integer;
+    total_dias_trabajadores        integer := 8273;
+    total_dias_cargas              integer := 3495;
+    fecha_ingreso                  date;
+    total_cargas                   integer;
+    otros_ingresos                 numeric := 0;
+    dias_cargas                    numeric := 0;
+    valor_mes1                     numeric := 0;
+    valor_mes2                     numeric := 0;
+    valor_mes3                     numeric := 0;
+    valor_mes4                     numeric := 0;
+    valor_mes5                     numeric := 0;
+    valor_mes6                     numeric := 0;
+    valor_mes7                     numeric := 0;
+    valor_mes8                     numeric := 0;
+    valor_mes9                     numeric := 0;
+    valor_mes10                    numeric := 0;
+    valor_mes11                    numeric := 0;
+    valor_mes12                    numeric := 0;
+    total_ingresos                 numeric := 0;
+    total_pagar                    numeric := 0;
+    valor_prestamos_empresa        numeric := 0;
+    trabajadores_calcular_utilidad jsonb   := jsonb_build_object('trabajadores', jsonb_build_array());
+    trabajador_aux                 jsonb;
+    item                 jsonb;
+    id_trabajador integer;
+    anio_periodo integer;
+    id_periodo_contable integer;
+BEGIN
+
+    anio_periodo := (select pl.anio from periodo_laboral pl where pl.id = id_periodo);
+    id_periodo_contable := (select pc.id from periodo_contable pc where pc.anio = anio_periodo);
+
+    IF id_periodo_contable is null then
+        RAISE EXCEPTION 'No hay informacion del periodo contable';
+end if;
+
+    -- Se obtiene la suma de los saldos de las cuentas que inican con 4y 5
+select sum(cc."actualSaldo") into valor_4 from cuenta_contable cc where cast(cc.identificador as text) like '4%' and cc."idPeriodoContable" = id_periodo_contable;
+select sum(cc."actualSaldo") into valor_5 from cuenta_contable cc where cast(cc.identificador as text) like '5%' and cc."idPeriodoContable" = id_periodo_contable;
+
+-- Se calcula la utilidad , valor nominar y anio
+utilidad := valor_4 - valor_5;
+    valor_nominal := (utilidad * 10) / 100;
+
+
+    RAISE NOTICE 'Valores inciales utilidad %, valor nominal %', utilidad, valor_nominal;
+
+    --Se obtiene el calculo de los dias trabajados por todos los trabajadores
+for registro_trabajador in (select * from trabajador t where t."sisHabilitado" = 'A')
+        loop
+            fecha_ingreso := (select hl."fechaIngreso"
+                              from historial_laboral hl
+                                       inner join trabajador t on t.id = hl."idTrabajador"
+                              where hl."idTrabajador" = registro_trabajador.id
+                                and hl."sisHabilitado" = 'A');
+            if fecha_ingreso is not null then
+                total_dias_trabajados_anio := (select case
+                                                          when (current_date - fecha_ingreso) > 360 then 360
+                                                          else current_date - fecha_ingreso end);
+                total_dias_trabajadores := total_dias_trabajadores + total_dias_trabajados_anio;
+                trabajador_aux := jsonb_build_object('id', registro_trabajador.id, 'fechaIngreso', fecha_ingreso, 'totalDiasTrabajados', total_dias_trabajados_anio);
+                trabajadores_calcular_utilidad :=
+                        jsonb_insert(trabajadores_calcular_utilidad, '{trabajadores,1}', trabajador_aux, true);
+end if;
+
+end loop;
+
+    RAISE NOTICE 'lista de trabajadores %', trabajadores_calcular_utilidad;
+
+FOR item in SELECT * FROM jsonb_array_elements((trabajadores_calcular_utilidad ->> 'trabajadores')::jsonb) loop
+    total_dias_trabajados_anio := (item ->> 'totalDiasTrabajados')::integer;
+id_trabajador := (item ->> 'id')::integer;
+        RAISE NOTICE 'id trabajador % , dias laborados %', id_trabajador, total_dias_trabajados_anio;
+
+        valor_real := valor_nominal / total_dias_trabajadores * total_dias_trabajados_anio;
+                total_cargas := (select  public.obtener_numero_cargas(id_trabajador := registro_trabajador.id));
+
+                if total_cargas > 0 then
+                    dias_cargas := total_dias_trabajados_anio * total_cargas;
+                    otros_ingresos := (utilidad * 5)/100;
+                    valor_mes1 := otros_ingresos/total_dias_cargas * dias_cargas;
+                    valor_mes2 := otros_ingresos/total_dias_cargas * dias_cargas;
+                    valor_mes3 := otros_ingresos/total_dias_cargas * dias_cargas;
+                    valor_mes4 := otros_ingresos/total_dias_cargas * dias_cargas;
+                    valor_mes5 := otros_ingresos/total_dias_cargas * dias_cargas;
+                    valor_mes6 := otros_ingresos/total_dias_cargas * dias_cargas;
+                    valor_mes7 := otros_ingresos/total_dias_cargas * dias_cargas;
+                    valor_mes8 := otros_ingresos/total_dias_cargas * dias_cargas;
+                    valor_mes9 := otros_ingresos/total_dias_cargas * dias_cargas;
+                    valor_mes10 := otros_ingresos/total_dias_cargas * dias_cargas;
+                    valor_mes11 := otros_ingresos/total_dias_cargas * dias_cargas;
+                    valor_mes12 := otros_ingresos/total_dias_cargas * dias_cargas;
+end if;
+
+                valor_prestamos_empresa := (select coalesce((select ap."valorCuota"
+                                from prestamo p
+                                         inner join abono_prestamo ap on p.id = ap."idPrestamo"
+                                where p."idTrabajador" = id_trabajador
+                                  and p."modalidadDescuento" = 'DCT'
+                                  and p.estado = 'PNT'
+                                order by p."fechaPrestamo" desc
+                                limit 1), 0));
+
+                total_ingresos := valor_real + valor_mes1;
+                total_pagar := total_ingresos - valor_prestamos_empresa;
+
+                RAISE NOTICE 'Trabajador % , dias trabajados por anio %, fecha ingreso %, valor real %, cargas %', registro_trabajador.id, total_dias_trabajados_anio, fecha_ingreso, valor_real, total_cargas;
+
+insert into pagos2 ("sisActualizado", "sisCreado", "sisHabilitado", "anioPago", anticipos, "diasLaboradosAlAnio", "fechaActual",
+                    "fechaFin", "fechaInicio", multas, "otrosDescuentos", "otrosIngresos", "prestamosEmpresa", "totalEgresos",
+                    "totalIngresos", "valorAPagar", "valorMes1", "valorMes10", "valorMes11", "valorMes12", "valorMes2", "valorMes3",
+                    "valorMes4", "valorMes5", "valorMes6", "valorMes7", "valorMes8", "valorMes9", "valorNominal", "valorReal",
+                    "idPagosUno", "idPeriodoLaboral", "idTrabajador")
+
+values (current_timestamp, current_timestamp, 'A',anio_periodo , 0, total_dias_trabajados_anio, current_date, fecha_fin,
+        fecha_inicio, 0,0, otros_ingresos, valor_prestamos_empresa, valor_prestamos_empresa, total_ingresos,
+        total_pagar, valor_mes1, valor_mes10, valor_mes11, valor_mes12, valor_mes2, valor_mes3,
+        valor_mes4, valor_mes5, valor_mes6, valor_mes7, valor_mes8, valor_mes9, valor_nominal, valor_real,
+        id_pago_uno, id_periodo, id_trabajador);
+
+reporte_item := jsonb_build_object('idTrabajador', id_trabajador, 'valorReal', valor_real, 'utilidadcargas',otros_ingresos, 'diasLaborados', total_dias_trabajados_anio,'utilidad',utilidad);
+        reporte := jsonb_insert(reporte, '{utilidades,1}', reporte_item,true );
+
+end loop;
+
+    RAISE NOTICE 'reporte % ', reporte;
+
+SELECT jsonb_pretty(reporte) INTO result;
+
+RETURN result;
+END;
+
+$$;
+
+
+
+
+
+
+
+
+
