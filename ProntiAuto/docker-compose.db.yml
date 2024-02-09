@@ -4,11 +4,17 @@ services:
     image: postgres:14.2-alpine
     restart: always
     environment:
-      - POSTGRES_USER=prontiauto
-      - POSTGRES_PASSWORD=prontiauto2022
-      #- POSTGRES_DB=testing
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=PIPj0SMJKGDVw3I
+      - POSTGRES_DB=prontiauto
       - POSTGRES_INITDB_ARGS=--auth-host=md5
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
-      - ./initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - network-dev
+
+networks:
+  network-dev:
+    external: true

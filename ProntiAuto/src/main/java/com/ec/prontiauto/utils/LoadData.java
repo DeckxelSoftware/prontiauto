@@ -109,7 +109,6 @@ public class LoadData {
                 listPathFathers.add("001_grupo.csv");
                 listPathFathers.add("001_configuracion_general.csv");
                 listPathFathers.add("001_plan.csv");
-                listPathFathers.add("001_grupo_contable.csv");
                 listPathFathers.add("001_periodo_contable.csv");
                 listPathFathers.add("001_area.csv");
                 listPathFathers.add("001_periodo_laboral.csv");
@@ -132,7 +131,6 @@ public class LoadData {
                 listObjectFathers.add(Grupo.class);
                 listObjectFathers.add(ConfiguracionGeneral.class);
                 listObjectFathers.add(Plan.class);
-//                listObjectFathers.add(GrupoContable.class);
                 listObjectFathers.add(PeriodoContable.class);
                 listObjectFathers.add(Area.class);
                 listObjectFathers.add(PeriodoLaboral.class);
@@ -157,7 +155,6 @@ public class LoadData {
                 listPathChildren.add("002_revision.csv");
                 // 5
                 listPathChildren.add("002_trabajador.csv");
-                listPathChildren.add("002_subgrupo_contable.csv");
                 listPathChildren.add("002_cuenta_contable.csv");
                 listPathChildren.add("002_cargo.csv");
                 listPathChildren.add("003_supervisor.csv");
@@ -189,9 +186,6 @@ public class LoadData {
                 listPathChildren.add("005_historico_rol.csv");
                 // 25
                 listPathChildren.add("006_cheque.csv");
-                listPathChildren.add("007_asiento_contable_cabecera.csv");
-                listPathChildren.add("008_transaccion_asiento_contable.csv");
-                listPathChildren.add("008_asiento_contable_det_adicional.csv");
 
                 List<Class<?>> listObjectChildren = new ArrayList<>();
                 listObjectChildren.add(Agencia.class);
@@ -204,7 +198,6 @@ public class LoadData {
                 listObjectChildren.add(Revision.class);
                 // 5
                 listObjectChildren.add(Trabajador.class);
-//                listObjectChildren.add(SubgrupoContable.class);
                 listObjectChildren.add(CuentaContable.class);
                 listObjectChildren.add(Cargo.class);
                 listObjectChildren.add(Supervisor.class);
@@ -236,9 +229,6 @@ public class LoadData {
                 listObjectChildren.add(HistoricoRol.class);
                 // 25
                 listObjectChildren.add(Cheque.class);
-                listObjectChildren.add(AsientoContableCabecera.class);
-                listObjectChildren.add(TransaccionAsientoContable.class);
-                listObjectChildren.add(AsientoContableDetAdicional.class);
                 String[][] listParamsFather = {
                                 { "IdRegion" },
                                 { "IdLibroBiblioteca" },
@@ -251,7 +241,6 @@ public class LoadData {
 
                                 // 5
                                 { "IdUsuario", "IdAgencia" },
-                                { "IdGrupoContable" },
                                 { "IdPeriodoContable" },
                                 { "IdArea" },
                                 { "IdTrabajador", "IdAgencia" },
@@ -283,9 +272,6 @@ public class LoadData {
                                 { "IdRolPago" },
                                 // 25
                                 { "IdChequera" },
-                                { "IdSubgrupoContable", "IdCheque", "IdCuentaContable" },
-                                { "IdAsientoContableCabecera", "IdCuentaContable" },
-                                { "IdAsientoContableCabecera" }
 
                 };
                 Class<?>[][] lisObjectRelationFathers = {
@@ -300,7 +286,6 @@ public class LoadData {
 
                                 // 5
                                 { Usuario.class, Agencia.class },
-//                                { GrupoContable.class },
                                 { PeriodoContable.class },
                                 { Area.class },
                                 { Trabajador.class, Agencia.class },
@@ -332,9 +317,6 @@ public class LoadData {
                                 { RolPago.class },
                                 // 25
                                 { Chequera.class },
-//                                { SubgrupoContable.class, Cheque.class, CuentaContable.class },
-                                { AsientoContableCabecera.class, CuentaContable.class },
-                                { AsientoContableCabecera.class }
                 };
 
                 int count = 0;
