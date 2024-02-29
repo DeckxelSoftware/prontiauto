@@ -89,6 +89,7 @@ public class AbstractController<Entity, DaoRequest, DaoResponse, IdType> {
             return new ResponseEntity<>(response, httpHeaders, HttpStatus.OK);
         } catch (Exception e) {
             System.out.println("-------------------\n" + e.getMessage());
+            e.printStackTrace();
             throw new ApiRequestException(e.getMessage());
         }
     }

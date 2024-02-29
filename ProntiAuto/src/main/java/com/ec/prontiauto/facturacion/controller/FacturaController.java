@@ -91,7 +91,9 @@ public class FacturaController {
             sortAscending = sortAscending == null ? true : sortAscending;
 
             List<Object> list = this.facturaRepository.findBySearchAndFilter(params,
-                    this.getPageRequest(skip, take, sortField, sortAscending));
+                    PageRequest.of(EnumConsulta.SKIP.getValor(),
+                            EnumConsulta.TAKE.getValor(),
+                            Sort.by("if_fecha_emision").ascending()));
 
             return new ResponseEntity<>(list, httpHeaders, HttpStatus.OK);
         } catch (Exception e) {

@@ -2,11 +2,11 @@ package com.ec.prontiauto.entidad;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
 import com.ec.prontiauto.abstracts.AbstractEntities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.opencsv.bean.CsvBindByName;
@@ -32,7 +32,7 @@ public class Grupo extends AbstractEntities {
 	private Integer totalContratosPermitidos;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "idGrupo")
+	@OneToMany(mappedBy = "idGrupo", cascade = CascadeType.ALL)
 	private List<ClienteEnGrupo> clienteEnGrupoCollection;
 
 	public Grupo() {

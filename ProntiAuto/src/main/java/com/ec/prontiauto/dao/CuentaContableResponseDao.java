@@ -3,6 +3,7 @@ package com.ec.prontiauto.dao;
 import java.util.List;
 
 import com.ec.prontiauto.abstracts.AbstractResponseDao;
+import com.ec.prontiauto.entidad.CuentaContable;
 
 public class CuentaContableResponseDao extends AbstractResponseDao {
 
@@ -528,6 +529,61 @@ public class CuentaContableResponseDao extends AbstractResponseDao {
 
 	public void setItemCobroPagoCollection(List<ItemCobroPagoResponseDao> ItemCobroPagoCollection) {
 		this.ItemCobroPagoCollection = ItemCobroPagoCollection;
+	}
+
+	public CuentaContableResponseDao(CuentaContable cuentaContable){
+		this.nombre = cuentaContable.getNombre();
+		this.identificador = cuentaContable.getIdentificador();
+		this.nivel = cuentaContable.getNivel();
+		this.idNivel1 = cuentaContable.getIdNivel1();
+		this.idNivel2 = cuentaContable.getIdNivel2();
+		this.idNivel3 = cuentaContable.getIdNivel3();
+		this.idNivel4 = cuentaContable.getIdNivel4();
+		this.idNivel5 = cuentaContable.getIdNivel5();
+		this.tipoCuenta = cuentaContable.getTipoCuenta();
+		this.movimiento = cuentaContable.getMovimiento();
+		this.anteriorDebito = cuentaContable.getAnteriorDebito();
+		this.anteriorCredito = cuentaContable.getAnteriorCredito();
+		this.anteriorSaldo = cuentaContable.getAnteriorSaldo();
+		this.eneroDebito = cuentaContable.getEneroDebito();
+		this.eneroCredito = cuentaContable.getEneroCredito();
+		this.eneroSaldo = cuentaContable.getEneroSaldo();
+		this.febreroDebito = cuentaContable.getFebreroDebito();
+		this.febreroCredito = cuentaContable.getFebreroCredito();
+		this.febreroSaldo = cuentaContable.getFebreroSaldo();
+		this.marzoDebito = cuentaContable.getMarzoDebito();
+		this.marzoCredito  = cuentaContable.getMarzoCredito();
+		this.marzoSaldo = cuentaContable.getMarzoSaldo();
+		this.abrilDebito = cuentaContable.getAbrilDebito();
+		this.abrilCredito = cuentaContable.getAbrilCredito();
+		this.abrilSaldo = cuentaContable.getAbrilSaldo();
+		this.mayoDebito = cuentaContable.getMayoDebito();
+		this.mayoCredito = cuentaContable.getMayoCredito();
+		this.mayoSaldo = cuentaContable.getMayoSaldo();
+		this.junioDebito = cuentaContable.getJunioDebito();
+		this.junioCredito = cuentaContable.getJunioCredito();
+		this.junioSaldo = cuentaContable.getJunioSaldo();
+		this.julioDebito = cuentaContable.getJulioDebito();
+		this.julioCredito = cuentaContable.getJulioCredito();
+		this.julioSaldo = cuentaContable.getJulioSaldo();
+		this.agostoDebito = cuentaContable.getAgostoDebito();
+		this.agostoCredito = cuentaContable.getAgostoCredito();
+		this.agostoSaldo = cuentaContable.getAgostoSaldo();
+		this.septiembreDebito = cuentaContable.getSeptiembreDebito();
+		this.septiembreCredito = cuentaContable.getSeptiembreCredito();
+		this.septiembreSaldo = cuentaContable.getSeptiembreSaldo();
+		this.octubreDebito = cuentaContable.getOctubreDebito();
+		this.octubreCredito = cuentaContable.getOctubreCredito();
+		this.octubreSaldo = cuentaContable.getOctubreSaldo();
+		this.noviembreDebito = cuentaContable.getNoviembreDebito();
+		this.noviembreCredito = cuentaContable.getNoviembreCredito();
+		this.noviembreSaldo = cuentaContable.getNoviembreSaldo();
+		this.diciembreDebito = cuentaContable.getDiciembreDebito();
+		this.diciembreCredito = cuentaContable.getDiciembreCredito();
+		this.diciembreSaldo = cuentaContable.getDiciembreSaldo();
+		this.actualDebito = cuentaContable.getActualDebito();
+		this.actualCredito = cuentaContable.getActualCredito();
+		this.actualSaldo = cuentaContable.getActualSaldo();
 	}
 	
 }

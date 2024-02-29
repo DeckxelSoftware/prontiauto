@@ -2,6 +2,7 @@ package com.ec.prontiauto.facturacion.entidad;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.Table;
 import com.ec.prontiauto.abstracts.AbstractEntities;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvDate;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "factura")
@@ -67,8 +69,24 @@ public class Factura extends AbstractEntities {
 
     @Lob
     @Column(name = "json_factura", nullable = false)
+    @Type(type = "org.hibernate.type.TextType")
     @CsvBindByName(column = "json_factura")
     private String jsonFactura;
+
+    @Column(name = "estado", nullable = false)
+    @CsvBindByName(column = "estado")
+    private String estado;
+
+    @Column(name = "clave_acceso")
+    @CsvBindByName(column = "clave_acceso")
+    private String claveAcceso;
+
+    @Column(name = "mensaje_error")
+    @CsvBindByName(column = "mensaje_error")
+    private String mensajeError;
+
+    @Column(name = "fecha_autorizacion")
+    private Timestamp fechaAutorizacion;
 
     public Factura() {
     }
@@ -177,4 +195,35 @@ public class Factura extends AbstractEntities {
         this.jsonFactura = jsonFactura;
     }
 
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getClaveAcceso() {
+        return claveAcceso;
+    }
+
+    public void setClaveAcceso(String claveAcceso) {
+        this.claveAcceso = claveAcceso;
+    }
+
+    public String getMensajeError() {
+        return mensajeError;
+    }
+
+    public void setMensajeError(String mensajeError) {
+        this.mensajeError = mensajeError;
+    }
+
+    public Timestamp getFechaAutorizacion() {
+        return fechaAutorizacion;
+    }
+
+    public void setFechaAutorizacion(Timestamp fechaAutorizacion) {
+        this.fechaAutorizacion = fechaAutorizacion;
+    }
 }

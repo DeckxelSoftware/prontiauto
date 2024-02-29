@@ -5,7 +5,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import com.ec.prontiauto.dao.ArticuloRequestDao;
 import com.ec.prontiauto.dao.OrdenCompraRequestDao;
 import com.ec.prontiauto.dao.OrdenCompraResponseDao;
 import com.ec.prontiauto.entidad.Articulo;
@@ -24,7 +23,7 @@ public class OrdenCompraMapper {
         setDaoRequestToEntity = (daoReq -> {
             OrdenCompra entity = new OrdenCompra();
             entity.setId(daoReq.getId());
-            entity.setSisHabilitado(daoReq.getSisHabilitado());
+            entity.setSisHabilitado(daoReq.getSisHabilitado() == null || daoReq.getSisHabilitado().isEmpty() ? "A" : daoReq.getSisHabilitado());
 
             entity.setFechaInicio(daoReq.getFechaInicio());
             entity.setNumeroOrdenContrato(daoReq.getNumeroOrdenContrato());
@@ -62,7 +61,7 @@ public class OrdenCompraMapper {
 
             if(daoReq.getArticulo() != null){
                 Articulo articulo = ArticuloMapper.setDaoRequestToEntity.apply(daoReq.getArticulo());
-                entity.setIdArticulo(articulo);
+                entity.setArticulo(articulo);
             }
 
             return entity;
@@ -99,8 +98,8 @@ public class OrdenCompraMapper {
                 daoRes.setIdContrato(ContratoMapper.setEntityToDaoReference.apply(entity.getIdContrato()));
             }
 
-            if (entity.getIdArticulo() != null && entity.getIdArticulo().getId() != null) {
-                daoRes.setIdArticulo(ArticuloMapper.setEntityToDaoReference.apply(entity.getIdArticulo()));
+            if (entity.getArticulo() != null && entity.getArticulo().getId() != null) {
+                daoRes.setIdArticulo(ArticuloMapper.setEntityToDaoReference.apply(entity.getArticulo()));
             }
 
             if (entity.getIdProveedor() != null && entity.getIdProveedor().getId() != null) {

@@ -51,6 +51,10 @@ public class PeriodoLaboral extends AbstractEntities {
 	@OneToMany(mappedBy = "idPeriodoLaboral")
 	private List<PagosDos> pagosDosCollection;
 
+	@JsonIgnore
+	@OneToMany(mappedBy = "idPeriodoLaboral")
+	private List<HistoricoRol> historicoRolCollection;
+
 	public PeriodoLaboral() {
 	}
 
@@ -139,5 +143,13 @@ public class PeriodoLaboral extends AbstractEntities {
 
 	public void setPagosDosCollection(List<PagosDos> pagosDosCollection) {
 		this.pagosDosCollection = pagosDosCollection;
+	}
+
+	public List<HistoricoRol> getHistoricoRolCollection() {
+		return historicoRolCollection;
+	}
+
+	public void setHistoricoRolCollection(List<HistoricoRol> historicoRolCollection) {
+		this.historicoRolCollection = historicoRolCollection;
 	}
 }

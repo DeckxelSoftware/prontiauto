@@ -10,6 +10,7 @@ import com.ec.prontiauto.dao.ProveedorResponseDao;
 import com.ec.prontiauto.entidad.Empresa;
 import com.ec.prontiauto.entidad.Proveedor;
 import com.ec.prontiauto.entidad.Usuario;
+import org.codehaus.jackson.map.ObjectMapper;
 
 public class ProveedorMapper {
     public static Function<ProveedorRequestDao, Proveedor> setDaoRequestToEntity;
@@ -31,6 +32,7 @@ public class ProveedorMapper {
             entity.setClaseContribuyente(daoRequest.getClaseContribuyente());
             entity.setObligadoLlevarContabilidad(daoRequest.getObligadoLLevarContabilidad());
             entity.setAgenteRetencion(daoRequest.getAgenteRetencion());
+            entity.setSisHabilitado("A");
 
             if (daoRequest.getIdUsuario() != null) {
                 if (daoRequest.getIdUsuario() instanceof Integer) {
@@ -38,7 +40,7 @@ public class ProveedorMapper {
                     usuario.setId((int) daoRequest.getIdUsuario());
                     entity.setIdUsuario(usuario);
                 } else {
-                    entity.setIdUsuario((Usuario) daoRequest.getIdUsuario());
+                    entity.setIdUsuario(new ObjectMapper().convertValue(daoRequest.getIdUsuario(), Usuario.class));
                 }
             }
 

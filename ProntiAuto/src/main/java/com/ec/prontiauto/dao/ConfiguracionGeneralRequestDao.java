@@ -18,6 +18,10 @@ public class ConfiguracionGeneralRequestDao extends AbstractRequestDao {
 	private BigDecimal sueldoBasico;
 	private BigDecimal rastreo;
 	private BigDecimal dispositivo;
+	private String codigoEstablecimiento;
+	private String puntoEmision;
+	private BigDecimal patronalParcial;
+	private BigDecimal patronalPasante;
 
 	public ConfiguracionGeneralRequestDao() {
 	}
@@ -118,4 +122,35 @@ public class ConfiguracionGeneralRequestDao extends AbstractRequestDao {
 		this.numDiasVacacionesAlAnio = numDiasVacacionesAlAnio;
 	}
 
+	public String getCodigoEstablecimiento() {
+		return codigoEstablecimiento;
+	}
+
+	public void setCodigoEstablecimiento(String codigoEstablecimiento) {
+		this.codigoEstablecimiento = codigoEstablecimiento;
+	}
+
+	public String getPuntoEmision() {
+		return puntoEmision;
+	}
+
+	public void setPuntoEmision(String puntoEmision) {
+		this.puntoEmision = puntoEmision;
+	}
+
+	public BigDecimal getPatronalParcial() {
+		return patronalParcial;
+	}
+
+	public void setPatronalParcial(BigDecimal patronalParcial) {
+		this.patronalParcial = patronalParcial;
+	}
+
+	public BigDecimal getPatronalPasante() {
+		return patronalPasante;
+	}
+
+	public void setPatronalPasante(BigDecimal patronalPasante) {
+		this.patronalPasante = patronalPasante;
+	}
 }

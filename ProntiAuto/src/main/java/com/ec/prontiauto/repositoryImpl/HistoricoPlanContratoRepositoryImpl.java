@@ -24,11 +24,11 @@ public class HistoricoPlanContratoRepositoryImpl extends AbstractRepository<Hist
 
     @Override
     public List<Object> findBySearchAndFilter(Map<String, Object> params, Pageable pageable) {
-        String dbQuery = "SELECT DISTINCT (e) FROM HistoricoPlanContrato e where  ";
+        String dbQuery = "SELECT DISTINCT (e) FROM HistoricoPlanContrato e WHERE 1=1  ";
         List<String> listFilters = new ArrayList<>();
         listFilters.add("idContrato");
         listFilters.add("id");
-        Query queryEM = this.CreateQueryWithFilters(listFilters, params, dbQuery);
+        Query queryEM = this.archivoRepository.CreateQueryWithFilters(listFilters, params, dbQuery);
        List<Object> objects= queryEM.getResultList();
         int countResults = objects!=null?objects.size():0;
         List<?> listResponse = queryEM.setFirstResult(pageable.getPageNumber())

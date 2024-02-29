@@ -2,6 +2,7 @@ package com.ec.prontiauto.repositoryImpl;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,5 +57,9 @@ public class ContratoRepositoryImpl extends AbstractRepository<Contrato, Integer
 		String[] params = { "id_contrato" };
 		Object[] values = { idContrato };
 		return this.callStoreProcedure("actualizar_fondo_contrato", params, values);
+	}
+
+	public Object generarReporteAsamblea(String fechaInicio) throws SQLException {
+		return this.callSimpleStoreProcedure("generar_reporte_asamblea", Collections.singletonList("fecha_inicio"), Collections.singletonList(fechaInicio));
 	}
 }

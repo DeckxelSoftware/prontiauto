@@ -5,7 +5,8 @@ import com.ec.prontiauto.abstracts.AbstractRequestDao;
 public class VendedorRequestDao extends AbstractRequestDao {
 
 	private Integer idAgencia;
-	Integer idTrabajador;
+	private Integer idTrabajador;
+	private Integer idProveedor;
 
 	public VendedorRequestDao() {
 
@@ -27,4 +28,11 @@ public class VendedorRequestDao extends AbstractRequestDao {
 		this.idTrabajador = idTrabajador;
 	}
 
+	public Integer getIdProveedor() {
+		return idProveedor;
+	}
+
+	public void setIdProveedor(Integer idProveedor) {
+		this.idProveedor = idProveedor;
+	}
 }

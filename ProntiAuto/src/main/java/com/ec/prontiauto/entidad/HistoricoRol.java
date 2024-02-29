@@ -3,7 +3,11 @@ package com.ec.prontiauto.entidad;
 import com.ec.prontiauto.abstracts.AbstractEntities;
 import com.opencsv.bean.CsvBindByName;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.sql.Date;
 
 @Entity
@@ -266,12 +270,13 @@ public class HistoricoRol extends AbstractEntities {
     private Float pagoDecimoCuartoMes;
 
     @ManyToOne
-    @JoinColumn(name = "\"idRolPago\"", referencedColumnName = "id", nullable = false)
-    private RolPago idRolPago;
+    @JoinColumn(name = "\"idHistorialLaboral\"", referencedColumnName = "id", nullable = false)
+    private HistorialLaboral historialLaboral;
 
-    @Transient
-    @CsvBindByName(column = "id_rol_pago")
-    private Integer idRolPago1;
+    @ManyToOne
+    @JoinColumn(name = "\"idPeriodoLaboral\"", referencedColumnName = "id", nullable = false)
+    private PeriodoLaboral idPeriodoLaboral;
+
 
     public HistoricoRol() {
     }
@@ -988,7 +993,7 @@ public class HistoricoRol extends AbstractEntities {
     public void setPagoDecimoCuartoMes(Float pagoDecimoCuartoMes) {
         this.pagoDecimoCuartoMes = pagoDecimoCuartoMes;
     }
-
+/*
     public RolPago getIdRolPago() {
         return idRolPago;
     }
@@ -1003,5 +1008,22 @@ public class HistoricoRol extends AbstractEntities {
 
     public void setIdRolPago1(Integer idRolPago1) {
         this.idRolPago1 = idRolPago1;
+    }*/
+
+
+    public HistorialLaboral getHistorialLaboral() {
+        return historialLaboral;
+    }
+
+    public void setHistorialLaboral(HistorialLaboral historialLaboral) {
+        this.historialLaboral = historialLaboral;
+    }
+
+    public PeriodoLaboral getIdPeriodoLaboral() {
+        return idPeriodoLaboral;
+    }
+
+    public void setIdPeriodoLaboral(PeriodoLaboral idPeriodoLaboral) {
+        this.idPeriodoLaboral = idPeriodoLaboral;
     }
 }

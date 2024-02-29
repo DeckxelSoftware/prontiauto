@@ -20,8 +20,8 @@ public class GrupoMapper {
             Grupo entity = new Grupo();
             entity.setId(daoRequest.getId());
             entity.setNombreGrupo(daoRequest.getNombreGrupo());
-            entity.setSumatoriaMontoMeta(daoRequest.getSumatoriaMontoMeta());
-            entity.setTotalContratosUsados(daoRequest.getTotalContratosUsados());
+            entity.setSumatoriaMontoMeta(0d);
+            entity.setTotalContratosUsados(0);
             entity.setTotalContratosPermitidos(daoRequest.getTotalContratosPermitidos());
             entity.setSisHabilitado(daoRequest.getSisHabilitado());
             return entity;

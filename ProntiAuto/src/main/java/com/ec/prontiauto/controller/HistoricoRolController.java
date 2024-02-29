@@ -14,10 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.ec.prontiauto.abstracts.AbstractController;
 import com.ec.prontiauto.abstracts.GenericMethods;
@@ -104,6 +101,15 @@ public class HistoricoRolController
             System.out.println("-------------------\n" + e.getMessage());
             throw new ApiRequestException(e.getMessage());
         }
+    }
+
+
+    @GetMapping(value = "/reporte-provisiones")
+    public ResponseEntity<?> generarReporteProvisiones(@RequestParam Integer idPeriodoLaboral){
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        Object response = historicoRolRepositoryImpl.obtenerReporteProvisiones(idPeriodoLaboral);
+        return new ResponseEntity<>(response, httpHeaders, HttpStatus.OK);
     }
 
 }

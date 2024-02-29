@@ -95,6 +95,10 @@ public class HistorialLaboral extends AbstractEntities {
 	@OneToMany(mappedBy = "idHistorialLaboral")
 	private List<RolPago> rolPagoCollection;
 
+	@JsonIgnore
+	@OneToMany(mappedBy = "historialLaboral")
+	private List<HistoricoRol> historicoRolPagoCollection;
+
 	public HistorialLaboral() {
 	}
 
@@ -242,8 +246,16 @@ public class HistorialLaboral extends AbstractEntities {
 		this.rolPagoCollection = rolPagoCollection;
 	}
 
+	public List<HistoricoRol> getHistoricoRolPagoCollection() {
+		return historicoRolPagoCollection;
+	}
+
+	public void setHistoricoRolPagoCollection(List<HistoricoRol> historicoRolPagoCollection) {
+		this.historicoRolPagoCollection = historicoRolPagoCollection;
+	}
+
 	public HistorialLaboral setValoresDiferentes(HistorialLaboral registroAntiguo,
-			HistorialLaboral registroActualizar) {
+												 HistorialLaboral registroActualizar) {
 
 		if (registroActualizar.getTipoContrato() != null) {
 			registroAntiguo.setTipoContrato(registroActualizar.getTipoContrato());

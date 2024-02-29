@@ -1,6 +1,7 @@
 
 package com.ec.prontiauto.controller;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,12 +75,12 @@ public class OrdenCompraController
 		if (antiguo != null) {
 			antiguo = antiguo.setValoresDiferentes(antiguo, entity);
 		}
-		if(entity.getIdArticulo() != null){
-			Articulo articulo = antiguo.getIdArticulo();
+		if(entity.getArticulo() != null){
+			Articulo articulo = antiguo.getArticulo();
 			if(articulo != null) {
-				articulo = articulo.setValoresDiferentes(articulo, entity.getIdArticulo());
+				articulo = articulo.setValoresDiferentes(articulo, entity.getArticulo());
 			}
-			antiguo.setIdArticulo(articulo);
+			antiguo.setArticulo(articulo);
 			antiguo.setUpdateEntity(true);
 		}
 		return antiguo;
@@ -94,6 +95,8 @@ public class OrdenCompraController
 	@Override
 	public OrdenCompra validationRequestEntityOnlyPost(OrdenCompra entity) {
 		OrdenCompraValidation ordenCompraValidation = new OrdenCompraValidation(entityManager, entity, articuloRepositoryImpl,false);
+		ordenCompraValidation.getEntity().setTelefono(ordenCompraValidation.getEntity().getTelefono() == null ? "NA" : ordenCompraValidation.getEntity().getTelefono());
+		ordenCompraValidation.getEntity().setFechaCartaOferta(ordenCompraValidation.getEntity().getFechaCartaOferta() == null ? new Date(System.currentTimeMillis()) : ordenCompraValidation.getEntity().getFechaCartaOferta());
 		return ordenCompraValidation.getEntity();
 	}
 

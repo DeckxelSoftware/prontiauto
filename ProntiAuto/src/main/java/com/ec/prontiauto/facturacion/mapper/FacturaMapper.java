@@ -11,6 +11,7 @@ import com.ec.prontiauto.facturacion.entidad.Factura;
 
 public class FacturaMapper {
     public static Function<FacturaRequestDao, Factura> setDaoRequestToEntity;
+    public static Function<FacturaResponseDao, Factura> setDaoResponseToEntity;
     public static Function<Factura, FacturaResponseDao> setEntityToDaoResponse;
     public static Function<List<Factura>, List<FacturaResponseDao>> setEntityListToDaoResponseList;
 
@@ -52,12 +53,38 @@ public class FacturaMapper {
             dao.setIfImporteTotal(entity.getIfImporteTotal());
             dao.setJsonFactura(entity.getJsonFactura());
             dao.setSisHabilitado(entity.getSisHabilitado());
+            dao.setEstado(entity.getEstado());
+            dao.setFechaAutorizacion(entity.getFechaAutorizacion());
+            dao.setClaveAcceso(entity.getClaveAcceso());
+            dao.setMensajeRespuesta(entity.getMensajeError());
             return dao;
         });
 
         setEntityListToDaoResponseList = (entityList -> {
             return (List<FacturaResponseDao>) StreamSupport.stream(entityList.spliterator(), true)
                     .map(FacturaMapper.setEntityToDaoResponse).collect(Collectors.toList());
+        });
+
+
+        setDaoResponseToEntity = (daoResponse -> {
+            Factura entity = new Factura();
+            entity.setId(daoResponse.getId());
+            entity.setItRuc(daoResponse.getItRuc());
+            entity.setItRazonSocial(daoResponse.getItRazonSocial());
+            entity.setItNombreComercial(daoResponse.getItNombreComercial());
+            entity.setItCodDoc(daoResponse.getItCodDoc());
+            entity.setItEstab(daoResponse.getItEstab());
+            entity.setItPtoEmision(daoResponse.getItPtoEmision());
+            entity.setItNumeroDocumento(daoResponse.getItNumeroDocumento());
+            entity.setIfIdentificacionComprador(daoResponse.getIfIdentificacionComprador());
+            entity.setIfRazonSocialComprador(daoResponse.getIfRazonSocialComprador());
+            entity.setIfDirEstablecimiento(daoResponse.getIfDirEstablecimiento());
+            entity.setIfFechaEmision(daoResponse.getIfFechaEmision());
+            entity.setIfImporteTotal(daoResponse.getIfImporteTotal());
+            entity.setJsonFactura(daoResponse.getJsonFactura());
+            entity.setSisHabilitado(daoResponse.getSisHabilitado());
+            entity.setEstado(daoResponse.getEstado());
+            return entity;
         });
     }
 }

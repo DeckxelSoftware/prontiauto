@@ -19,13 +19,21 @@ public class CargoVacacionRepositoryImpl extends AbstractRepository<CargoVacacio
 
     @Override
     public List<Object> findBySearchAndFilter(Map<String, Object> params, Pageable pageable) {
-        String dbQuery = "SELECT e FROM CargoVacacion e ";
+        String dbQuery = "SELECT e FROM CargoVacacion e " +
+                "inner join Trabajador t on e.idTrabajador = t.id " +
+                "inner join Usuario u on t.idUsuario = u.id " +
+                "WHERE (lower(u.nombres) like lower(:busqueda) "
+                + "OR lower(u.apellidos) like lower(:busqueda)) ";
         List<String> listFilters = new ArrayList<>();
         listFilters.add("sisHabilitado");
         listFilters.add("idTrabajador");
         listFilters.add("id");
 
-        Query queryEM = this.CreateQueryWithFiltersSinAnd(listFilters, params, dbQuery);
+
+
+        //Query queryEM = this.CreateQueryWithFiltersSinAnd(listFilters, params, dbQuery);
+        Query queryEM = this.CreateQueryWithFiltersAndJoin(listFilters, params, dbQuery)
+                .setParameter("busqueda", "%" + params.get("busqueda") + "%");
         int countReults = queryEM.getResultList().size();
         List<?> listResponse = queryEM.setFirstResult(pageable.getPageNumber())
                 .setMaxResults(pageable.getPageSize())

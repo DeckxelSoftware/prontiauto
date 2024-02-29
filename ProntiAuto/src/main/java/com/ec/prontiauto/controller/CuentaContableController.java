@@ -123,4 +123,26 @@ public class CuentaContableController
 					HttpStatus.BAD_REQUEST);
 		}
 	}
+
+
+	@RequestMapping(value = "/todos", method = RequestMethod.GET)
+	public ResponseEntity<?> obtenerBalanceComprobacion(
+			Integer anio,
+			Integer mesDesde,
+			Integer mesHasta,
+			Integer identificadorCuentaContableDesde,
+			Integer identificadorCuentaContableHasta){
+
+		final HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+		String balance = this.cuentaContableRepositoryImpl.obtenerBalanceComprobacion(anio,
+				mesDesde,
+				mesHasta,
+				identificadorCuentaContableDesde,
+				identificadorCuentaContableHasta);
+
+		return new ResponseEntity<Object>(balance, httpHeaders, HttpStatus.OK);
+
+	}
 }

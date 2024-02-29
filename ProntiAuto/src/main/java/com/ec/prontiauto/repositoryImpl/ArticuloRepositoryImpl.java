@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.springframework.data.domain.Pageable;
@@ -40,9 +42,11 @@ public class ArticuloRepositoryImpl extends AbstractRepository<Articulo, Integer
     public Articulo createArticulo(Articulo entity) {
         Articulo articulo = null;
         try {
-            articulo = this.createAndReturnValue(entity);
+            entity.setSisHabilitado("A");
+           articulo = this.createAndReturnValue(entity);
         } catch (Exception e) {
-            System.out.printf("\n%s\n", "------------------------------", e.getMessage());
+            System.out.printf("\n%s\n", "------------------------------", e);
+            e.printStackTrace();
         }
 
         return articulo;
