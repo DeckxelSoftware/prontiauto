@@ -1,8 +1,13 @@
-sis_habilitado,nombre_item,nombre_cuenta,id_cuenta_contable
-A,Inscripción,bancos1,1
-A,Cuota administrativa,bancos2,2
-A,Capital suscriptor,bancos3,3
-A,Dispositivo,bancos1,1
-A,Rastreo,bancos1,1
-A,Oferta,bancos1,1
-A,Cargo adjudicación,bancos1,1
+sis_habilitado,nombre_item,nombre_cuenta,id_cuenta_contable, codigo_cuenta_contable
+A,Inscripción,INGRESO DE INSCRIPCION AUTOS,129, 4110101
+A,Cuota administrativa,INGRESOS POR ADMINISTRACION AUTOS,130, 4110102
+A,Capital suscriptor,bancos,3,3
+A,Dispositivo,SERVICIO DE SEGURIDAD INTERNO DISPOSITIVO,76,2110105
+A,Rastreo,SISTEMA DE SEGURIDAD INTERNO MONITOREO,76,2110105
+A,Oferta,bancos,1,1
+A,Cargo adjudicación,ADJUDICADO AUTOS,63,211010201
+A,Cargo por no adjudicación,NO ADJUDICADO AUTOS,58,211010101
+A,IVA,IVA POR PAGAR,93,2130201
+A,Banco Pichincha,PICHINCHA,8,1120101
+A,Banco Produbanco,PRODUBANCO,9,1120102
+A,CUENTAS Y DOCUMENTOS POR COBRAR COMERCIALES CORRIENTES,CUENTAS Y DOCUMENTOS POR COBRAR COMERCIALES CORRIENTES,10, 114

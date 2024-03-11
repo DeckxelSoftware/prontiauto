@@ -26,11 +26,11 @@ public class AsientoContableCabecera extends AbstractEntities {
 	@CsvBindByName(column = "fecha")
 	private Date fecha;
 
-	@Column(name = "anio", nullable = false, unique = true)
+	@Column(name = "anio", nullable = false)
 	@CsvBindByName(column = "anio")
 	private Integer anio;
 
-	@Column(name = "\"mesPeriodo\"", nullable = false, length = 3, unique = true)
+	@Column(name = "\"mesPeriodo\"", nullable = false, length = 3/*, unique = true*/)
 	@CsvBindByName(column = "mes_periodo")
 	private String mesPeriodo;
 

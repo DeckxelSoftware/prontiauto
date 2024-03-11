@@ -3,6 +3,7 @@ package com.ec.prontiauto.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -98,7 +99,7 @@ public class ClienteController extends AbstractController<Cliente, ClienteReques
 			Usuario usuario = mapper.convertValue(dao.getIdUsuario(), Usuario.class);
 			Usuario newUser = isUpdate ? this.updateUser(usuario, client.getIdUsuario().getId())
 					: usuarioRepository.createUser(usuario);
-			dao.setIdUsuario(newUser.getId());
+			if(!Objects.isNull(usuario.getId())) dao.setIdUsuario(newUser.getId());
 		}
 		return ClienteMapper.setDaoRequestToEntity.apply(dao);
 	}

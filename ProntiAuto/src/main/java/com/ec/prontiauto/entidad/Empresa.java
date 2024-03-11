@@ -95,6 +95,18 @@ public class Empresa extends AbstractEntities {
 	@OneToMany(mappedBy = "idEmpresa")
 	private List<Proveedor> proveedorCollection;
 
+	@Column(name = "\"regimenGeneral\"", nullable = false, columnDefinition = "boolean default false")
+	@CsvBindByName(column = "regimen_general")
+	private Boolean regimenGeneral;
+
+	@Column(name = "\"rimpeEmprendedor\"", nullable = false, columnDefinition = "boolean default false")
+	@CsvBindByName(column = "rimpe_emprendedor")
+	private Boolean rimpeEmprendedor;
+
+	@Column(name = "\"rimpePopular\"", nullable = false, columnDefinition = "boolean default false")
+	@CsvBindByName(column = "rimpe_popular")
+	private Boolean rimpePopular;
+
 	public Empresa() {
 	}
 

@@ -1,2 +1,2 @@
-sis_habilitado,iva_porcentaje,tasa_cambio_contrato,min_cuota_mora_refinanciamiento,max_contratos_en_grupo,cuota_administrativa,num_dias_vacaciones_al_anio,tasa_cargo_adjudicacion,aporte_patronal_iess,aporte_personal_iess,sueldo_basico,rastreo,dispositivo
-A,12,3,2,144,44.8,15,1,12,12,420,3,4
+sis_habilitado,iva_porcentaje,tasa_cambio_contrato,min_cuota_mora_refinanciamiento,max_contratos_en_grupo,cuota_administrativa,num_dias_vacaciones_al_anio,tasa_cargo_adjudicacion,aporte_patronal_iess,aporte_personal_iess,sueldo_basico,rastreo,dispositivo,codigo_establecimiento,punto_emision
+A,12,3,2,144,44.8,15,1,12,12,420,3,4,001,084

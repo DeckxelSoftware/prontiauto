@@ -19,13 +19,17 @@ import com.opencsv.bean.CsvBindByName;
 @Table(name = "cuenta_contable")
 public class CuentaContable extends AbstractEntities {
 
-	@Column(name = "nombre", length = 255, nullable = false, unique = true)
+	@Column(name = "nombre", length = 255, nullable = false/*, unique = true*/)
 	@CsvBindByName(column = "nombre")
 	private String nombre;
 
 	@Column(name = "identificador", nullable = false, unique = true)
 	@CsvBindByName(column = "identificador")
 	private Integer identificador;
+
+	@Column(name = "\"codigoCuentaContable\"", nullable = false, unique = true)
+	@CsvBindByName(column = "codigo_cuenta_contable")
+	private String codigoCuentaContable;
 
 	@Column(name = "nivel", nullable = false)
 	@CsvBindByName(column = "nivel")

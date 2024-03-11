@@ -29,6 +29,10 @@ public class ItemCobroPago extends AbstractEntities {
     @JoinColumn(name = "\"idCuentaContable\"", referencedColumnName = "id", nullable = false)
     private CuentaContable idCuentaContable;
 
+    @Column(name = "\"codigoCuentaContable\"", nullable = false)
+    @CsvBindByName(column = "codigo_cuenta_contable")
+    private String codigoCuentaContable;
+
     @Transient
     @CsvBindByName(column = "id_cuenta_contable")
     private Integer idCuentaContable1;

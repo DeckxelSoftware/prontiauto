@@ -29,7 +29,8 @@ public class ProntiAutoApplication implements CommandLineRunner {
 			loadData.loadData();
 			System.out.println("Data loaded");
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
+			System.out.println(e);
 		}
 	}
 }
