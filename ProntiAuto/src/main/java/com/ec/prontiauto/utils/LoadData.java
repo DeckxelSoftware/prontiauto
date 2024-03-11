@@ -96,7 +96,6 @@ public class LoadData {
                 List<String> listPathFathers = new ArrayList<>();
                 listPathFathers.add("001_impuesto_renta.csv");
                 listPathFathers.add("001_region.csv");
-                listPathFathers.add("001_factura.csv");
                 listPathFathers.add("001_nota_credito.csv");
                 listPathFathers.add("001_articulo.csv");
                 listPathFathers.add("001_banco.csv");
@@ -109,7 +108,6 @@ public class LoadData {
                 listPathFathers.add("001_grupo.csv");
                 listPathFathers.add("001_configuracion_general.csv");
                 listPathFathers.add("001_plan.csv");
-                listPathFathers.add("001_grupo_contable.csv");
                 listPathFathers.add("001_periodo_contable.csv");
                 listPathFathers.add("001_area.csv");
                 listPathFathers.add("001_periodo_laboral.csv");
@@ -119,7 +117,6 @@ public class LoadData {
                 List<Class<?>> listObjectFathers = new ArrayList<>();
                 listObjectFathers.add(ImpuestoRenta.class);
                 listObjectFathers.add(Region.class);
-                listObjectFathers.add(Factura.class);
                 listObjectFathers.add(NotaCredito.class);
                 listObjectFathers.add(Articulo.class);
                 listObjectFathers.add(Banco.class);
@@ -132,7 +129,6 @@ public class LoadData {
                 listObjectFathers.add(Grupo.class);
                 listObjectFathers.add(ConfiguracionGeneral.class);
                 listObjectFathers.add(Plan.class);
-//                listObjectFathers.add(GrupoContable.class);
                 listObjectFathers.add(PeriodoContable.class);
                 listObjectFathers.add(Area.class);
                 listObjectFathers.add(PeriodoLaboral.class);
@@ -153,16 +149,13 @@ public class LoadData {
                 listPathChildren.add("002_lista_valores_detalle.csv");
                 listPathChildren.add("002_rol_permiso.csv");
                 listPathChildren.add("002_rol_usuario.csv");
-                listPathChildren.add("002_proveedor.csv");
                 listPathChildren.add("002_revision.csv");
                 // 5
                 listPathChildren.add("002_trabajador.csv");
-                listPathChildren.add("002_subgrupo_contable.csv");
                 listPathChildren.add("002_cuenta_contable.csv");
                 listPathChildren.add("002_cargo.csv");
                 listPathChildren.add("003_supervisor.csv");
                 listPathChildren.add("003_sri_gastos.csv");
-                listPathChildren.add("003_detalle_novedad_rol_pago.csv");
                 listPathChildren.add("003_item_cobro_pago.csv");
                 listPathChildren.add("003_pagos_dos.csv");
                 // 10
@@ -173,25 +166,15 @@ public class LoadData {
                 listPathChildren.add("003_memorandum.csv");
                 // 15
                 listPathChildren.add("003_informacion_financiera.csv");
-                listPathChildren.add("003_cargo_vacacion.csv");
-                listPathChildren.add("003_prestamo.csv");
                 listPathChildren.add("004_histocio_plan_contrato.csv");
                 listPathChildren.add("004_cuenta_bancaria_empresa.csv");
-                listPathChildren.add("004_abono_prestamo.csv");
-                listPathChildren.add("004_orden_de_compra.csv");
-                listPathChildren.add("004_rol_pago.csv");
                 // 20
-                listPathChildren.add("004_registro_vacacion.csv");
                 listPathChildren.add("004_licitacion.csv");
                 listPathChildren.add("005_cuota.csv");
                 listPathChildren.add("005_refinanciamiento.csv");
                 listPathChildren.add("005_chequera.csv");
-                listPathChildren.add("005_historico_rol.csv");
                 // 25
                 listPathChildren.add("006_cheque.csv");
-                listPathChildren.add("007_asiento_contable_cabecera.csv");
-                listPathChildren.add("008_transaccion_asiento_contable.csv");
-                listPathChildren.add("008_asiento_contable_det_adicional.csv");
 
                 List<Class<?>> listObjectChildren = new ArrayList<>();
                 listObjectChildren.add(Agencia.class);
@@ -200,16 +183,13 @@ public class LoadData {
                 listObjectChildren.add(ListaValoresDetalle.class);
                 listObjectChildren.add(RolPermiso.class);
                 listObjectChildren.add(RolUsuario.class);
-                listObjectChildren.add(Proveedor.class);
                 listObjectChildren.add(Revision.class);
                 // 5
                 listObjectChildren.add(Trabajador.class);
-//                listObjectChildren.add(SubgrupoContable.class);
                 listObjectChildren.add(CuentaContable.class);
                 listObjectChildren.add(Cargo.class);
                 listObjectChildren.add(Supervisor.class);
                 listObjectChildren.add(SriGastos.class);
-                listObjectChildren.add(DetalleNovedadRolPago.class);
                 listObjectChildren.add(ItemCobroPago.class);
                 listObjectChildren.add(PagosDos.class);
                 // 10
@@ -220,25 +200,15 @@ public class LoadData {
                 listObjectChildren.add(Memorandum.class);
                 // 15
                 listObjectChildren.add(InformacionFinanciera.class);
-                listObjectChildren.add(CargoVacacion.class);
-                listObjectChildren.add(Prestamo.class);
                 listObjectChildren.add(HistoricoPlanContrato.class);
                 listObjectChildren.add(CuentaBancariaEmpresa.class);
-                listObjectChildren.add(AbonoPrestamo.class);
-                listObjectChildren.add(OrdenCompra.class);
-                listObjectChildren.add(RolPago.class);
                 // 20
-                listObjectChildren.add(RegistroVacacion.class);
                 listObjectChildren.add(Licitacion.class);
                 listObjectChildren.add(Cuota.class);
                 listObjectChildren.add(Refinanciamiento.class);
                 listObjectChildren.add(Chequera.class);
-                listObjectChildren.add(HistoricoRol.class);
                 // 25
                 listObjectChildren.add(Cheque.class);
-                listObjectChildren.add(AsientoContableCabecera.class);
-                listObjectChildren.add(TransaccionAsientoContable.class);
-                listObjectChildren.add(AsientoContableDetAdicional.class);
                 String[][] listParamsFather = {
                                 { "IdRegion" },
                                 { "IdLibroBiblioteca" },
@@ -246,17 +216,14 @@ public class LoadData {
                                 { "IdListaValoresTipo" },
                                 { "IdRol", "IdPermiso" },
                                 { "IdRol", "IdUsuario" },
-                                { "IdUsuario", "IdEmpresa" },
                                 { "IdArticulo" },
 
                                 // 5
                                 { "IdUsuario", "IdAgencia" },
-                                { "IdGrupoContable" },
                                 { "IdPeriodoContable" },
                                 { "IdArea" },
                                 { "IdTrabajador", "IdAgencia" },
                                 { "IdTrabajador" },
-                                { "IdRubrosRol", "IdTrabajador", "IdPeriodoLaboral" },
                                 { "IdCuentaContable" },
                                 { "IdPagosUno", "IdTrabajador", "IdPeriodoLaboral" },
                                 // 10
@@ -267,25 +234,15 @@ public class LoadData {
                                 { "IdTrabajador" },
                                 // 15
                                 { "IdTrabajador" },
-                                { "IdTrabajador" },
-                                { "IdTrabajador" },
                                 { "IdContrato", "IdPlan" },
                                 { "IdBanco", "IdEmpresa", "IdInformacionFinanciera" },
-                                { "IdPrestamo" },
-                                { "IdArticulo", "IdContrato", "IdProveedor" },
-                                { "IdPeriodoLaboral", "IdHistorialLaboral" },
                                 // 20
-                                { "IdCargoVacacion" },
                                 { "IdContrato" },
                                 { "IdHistoricoPlanContrato" },
                                 { "IdHistoricoPlanContrato" },
                                 { "IdCuentaBancariaEmpresa" },
-                                { "IdRolPago" },
                                 // 25
                                 { "IdChequera" },
-                                { "IdSubgrupoContable", "IdCheque", "IdCuentaContable" },
-                                { "IdAsientoContableCabecera", "IdCuentaContable" },
-                                { "IdAsientoContableCabecera" }
 
                 };
                 Class<?>[][] lisObjectRelationFathers = {
@@ -295,17 +252,14 @@ public class LoadData {
                                 { ListaValoresTipo.class },
                                 { Rol.class, Permiso.class },
                                 { Rol.class, Usuario.class },
-                                { Usuario.class, Empresa.class },
                                 { Articulo.class },
 
                                 // 5
                                 { Usuario.class, Agencia.class },
-//                                { GrupoContable.class },
                                 { PeriodoContable.class },
                                 { Area.class },
                                 { Trabajador.class, Agencia.class },
                                 { Trabajador.class },
-                                { RubrosRol.class, Trabajador.class, PeriodoLaboral.class },
                                 { CuentaContable.class },
                                 { PagosUno.class, Trabajador.class, PeriodoLaboral.class },
                                 // 10
@@ -316,25 +270,16 @@ public class LoadData {
                                 { Trabajador.class },
                                 // 15
                                 { Trabajador.class },
-                                { Trabajador.class },
-                                { Trabajador.class },
                                 { Contrato.class, Plan.class },
                                 { Banco.class, Empresa.class, InformacionFinanciera.class },
-                                { Prestamo.class },
-                                { Articulo.class, Contrato.class, Proveedor.class },
-                                { PeriodoLaboral.class, HistorialLaboral.class },
                                 // 20
-                                { CargoVacacion.class },
+                               // { CargoVacacion.class },
                                 { Contrato.class },
                                 { HistoricoPlanContrato.class },
                                 { HistoricoPlanContrato.class },
                                 { CuentaBancariaEmpresa.class },
-                                { RolPago.class },
                                 // 25
                                 { Chequera.class },
-//                                { SubgrupoContable.class, Cheque.class, CuentaContable.class },
-                                { AsientoContableCabecera.class, CuentaContable.class },
-                                { AsientoContableCabecera.class }
                 };
 
                 int count = 0;

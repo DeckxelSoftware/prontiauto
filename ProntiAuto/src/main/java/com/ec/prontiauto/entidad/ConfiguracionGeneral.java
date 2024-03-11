@@ -63,11 +63,11 @@ public class ConfiguracionGeneral extends AbstractEntities {
 	private BigDecimal dispositivo;
 
 	@Column(name = "cod_establecimiento")
-	@CsvBindByName(column = "codigoEstablecimiento")
+	@CsvBindByName(column = "codigo_establecimiento")
 	private String codigoEstablecimiento;
 
 	@Column(name = "punto_emision")
-	@CsvBindByName(column = "puntoEmision")
+	@CsvBindByName(column = "punto_emision")
 	private String puntoEmision;
 
 

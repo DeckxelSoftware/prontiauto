@@ -103,12 +103,13 @@ public class SendingPendingInvoicesScheduler {
 
             if(!"AUTORIZADO".equalsIgnoreCase(newStatus)){
                 invoice.setMensajeError(jsonResponse.get("detalleError").getAsString());
+            }else {
+                OffsetDateTime fechaAutorizacion = OffsetDateTime.parse(jsonResponse.get("fechaAtorizacion").getAsString());
+                invoice.setFechaAutorizacion(Timestamp.from(fechaAutorizacion.toInstant()));
+                invoice.setClaveAcceso(authorizationKey);
             }
 
             invoice.setEstado(newStatus.toUpperCase());
-            invoice.setClaveAcceso(authorizationKey);
-            OffsetDateTime fechaAutorizacion = OffsetDateTime.parse(jsonResponse.get("fechaAtorizacion").getAsString());
-            invoice.setFechaAutorizacion(Timestamp.from(fechaAutorizacion.toInstant()));
 
 
             return this.invoiceRepository.updateAndReturnValue(invoice);

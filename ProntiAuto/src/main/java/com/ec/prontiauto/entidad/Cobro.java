@@ -22,7 +22,7 @@ public class Cobro extends AbstractEntities {
     @CsvBindByName(column = "valor_a_cobrar")
     private BigDecimal valorACobrar;
 
-    @Column(name = "\"detalleCobros\"")
+    @Column(name = "\"detalleCobros\"", columnDefinition = "TEXT")
     private String detalleCobros;
 
     @ManyToOne

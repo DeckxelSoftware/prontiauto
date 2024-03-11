@@ -121,7 +121,7 @@ public class UsuarioRepositoryImpl extends AbstractRepository<Usuario, Integer> 
                 newUser= (Usuario) this.customQuery(query)
                         .setParameter("nombres", usuario.getNombres())
                         .setParameter("apellidos", usuario.getApellidos())
-                        .getSingleResult();
+                        .getResultList().stream().findFirst().orElse(usuario);
 
             }
 

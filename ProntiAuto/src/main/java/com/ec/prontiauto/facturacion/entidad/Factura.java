@@ -73,7 +73,7 @@ public class Factura extends AbstractEntities {
     @CsvBindByName(column = "json_factura")
     private String jsonFactura;
 
-    @Column(name = "estado", nullable = false)
+    @Column(name = "estado", nullable = false, columnDefinition = "varchar default 'PENDIENTE'")
     @CsvBindByName(column = "estado")
     private String estado;
 
