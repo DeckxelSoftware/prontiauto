@@ -57,6 +57,7 @@ public class FacturaMapper {
             dao.setFechaAutorizacion(entity.getFechaAutorizacion());
             dao.setClaveAcceso(entity.getClaveAcceso());
             dao.setMensajeRespuesta(entity.getMensajeError());
+            dao.setUrlArchivo(entity.getUrlArchivo());
             return dao;
         });
 
