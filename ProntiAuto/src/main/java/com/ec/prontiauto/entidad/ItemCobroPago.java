@@ -33,6 +33,14 @@ public class ItemCobroPago extends AbstractEntities {
     @CsvBindByName(column = "codigo_cuenta_contable")
     private String codigoCuentaContable;
 
+    public String getCodigoCuentaContable() {
+        return codigoCuentaContable;
+    }
+
+    public void setCodigoCuentaContable(String codigoCuentaContable) {
+        this.codigoCuentaContable = codigoCuentaContable.trim();
+    }
+
     @Transient
     @CsvBindByName(column = "id_cuenta_contable")
     private Integer idCuentaContable1;

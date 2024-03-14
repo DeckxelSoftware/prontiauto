@@ -2,6 +2,7 @@ package com.ec.prontiauto;
 
 import com.ec.prontiauto.enums.EnumConsulta;
 import com.ec.prontiauto.facturacion.dao.FacturaResponseDao;
+import com.ec.prontiauto.facturacion.dao.GenerarArchivoRequestDao;
 import com.ec.prontiauto.facturacion.entidad.Factura;
 import com.ec.prontiauto.facturacion.respository.FacturaRepositoryImpl;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -35,6 +36,8 @@ public class SendingPendingInvoicesScheduler {
     private final FacturaRepositoryImpl invoiceRepository;
     private final RestTemplate restTemplate;
     private final String invoiceAuthorizationService;
+    private final String invoiceForwardingService;
+    private final String invoiceGenerationService;
     private final Map<String,String> authorizationInfo;
 
     private final Logger logger = LogManager.getLogger(SendingPendingInvoicesScheduler.class);
@@ -42,10 +45,14 @@ public class SendingPendingInvoicesScheduler {
     public SendingPendingInvoicesScheduler(FacturaRepositoryImpl invoiceRepository,
                                            RestTemplate restTemplate,
                                            @Value("${service.invoiceAuthorization.url}") String invoiceAuthorizationService,
+                                           @Value("${service.resendInvoice.url}") String invoiceForwardingService,
+                                           @Value("${service.generateInvoiceFile.url}") String invoiceGenerationService,
                                            @Value("#{${service.invoiceAuthorization.authorizationInfo}}") Map<String,String> authorizationInfo){
         this.invoiceRepository = invoiceRepository;
         this.restTemplate = restTemplate;
         this.invoiceAuthorizationService = invoiceAuthorizationService;
+        this.invoiceForwardingService = invoiceForwardingService;
+        this.invoiceGenerationService = invoiceGenerationService;
         this.authorizationInfo = authorizationInfo;
     }
 
@@ -59,7 +66,7 @@ public class SendingPendingInvoicesScheduler {
 
         List<ResponseEntity<JsonObject>> invoicesSentForApproval = getPendingInvoices(params)
                 .stream()
-                .map(this::sendInvoiceToApprove)
+                .map(invoice -> sendInvoiceToApprove(invoice, false))
                 .filter(isASuccessfulResponse())
                 .collect(Collectors.toList());
 
@@ -71,7 +78,17 @@ public class SendingPendingInvoicesScheduler {
                 .map(this::updateInvoice)
                 .collect(Collectors.toList());
 
+
         logger.debug("Invoices updated {} ", invoicesUpdated.stream().map(Factura::getId));
+
+        logger.info("generating the files...");
+
+        invoicesUpdated.stream()
+                .map(this::generateInvoiceFile)
+                .map(HttpEntity::getBody)
+                .forEach(this::saveInvoiceFile);
+
+
 
         logger.info("====ENDING sendInvoiceToApprove====");
 
@@ -118,14 +135,30 @@ public class SendingPendingInvoicesScheduler {
         return null;
     }
 
+    private void saveInvoiceFile(JsonObject response){
+        int id = response.get("id").getAsInt();
+        Optional<Factura> invoiceOpt = this.invoiceRepository.findById(id);
+        if(invoiceOpt.isPresent()){
+            Factura invoice = invoiceOpt.get();
+            invoice.setUrlArchivo(response.get("urlReporte").getAsString());
+            this.invoiceRepository.update(invoice);
+        }
+    }
+
     @NotNull
-    private ResponseEntity<JsonObject> sendInvoiceToApprove(FacturaResponseDao pendingInvoice) {
+    private ResponseEntity<JsonObject> sendInvoiceToApprove(FacturaResponseDao pendingInvoice, boolean isReturned) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         JsonObject jsonRequest = new Gson().fromJson(pendingInvoice.getJsonFactura(), JsonObject.class);
         jsonRequest.add("infoAutoriza", new Gson().toJsonTree(authorizationInfo));
         HttpEntity<Object> request = new HttpEntity<>(jsonRequest.toString(), headers);
-        ResponseEntity<String> httpResponse = this.restTemplate.postForEntity(invoiceAuthorizationService, request, String.class);
+        ResponseEntity<String> httpResponse = this.restTemplate.postForEntity(!isReturned ? invoiceAuthorizationService : invoiceForwardingService, request, String.class);
+        JsonObject responseBody = new Gson().fromJson(httpResponse.getBody(), JsonObject.class);
+        String newStatus = responseBody.get("estadoSri").getAsString();
+
+        if("DEVUELTA".equalsIgnoreCase(newStatus) && "CLAVE ACCESO REGISTRADA".equalsIgnoreCase(responseBody.get("detalleError").getAsString())){
+            return sendInvoiceToApprove(pendingInvoice, true);
+        }
 
         Map<String,Object> bodyResponseEnrichment = new HashMap<>();
         bodyResponseEnrichment.put("id", pendingInvoice.getId());
@@ -133,6 +166,32 @@ public class SendingPendingInvoicesScheduler {
 
         return ResponseEntity.status(httpResponse.getStatusCode())
                 .body(new Gson().fromJson(bodyResponseEnrichment.toString(), JsonObject.class));
+    }
+
+    private ResponseEntity<JsonObject> generateInvoiceFile(Factura entity) {
+        Gson jsonParser = new Gson();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        JsonObject jsonRequest = buildFileGenerationRequest(entity.getJsonFactura(), jsonParser);
+        HttpEntity<Object> request = new HttpEntity<>(jsonRequest.toString(), headers);
+        ResponseEntity<String> httpResponse = this.restTemplate.postForEntity(invoiceGenerationService, request, String.class);
+        JsonObject invoiceFileResponse = new Gson().fromJson(httpResponse.getBody(), JsonObject.class);
+        Map<String,Object> bodyResponseEnrichment = new HashMap<>();
+        bodyResponseEnrichment.put("id", entity.getId());
+        bodyResponseEnrichment.put("urlReporte", invoiceFileResponse.get("urlReporte"));
+        return ResponseEntity.status(httpResponse.getStatusCode())
+                .body(new Gson().fromJson(bodyResponseEnrichment.toString(), JsonObject.class));
+    }
+
+    private JsonObject buildFileGenerationRequest(String jsonInvoice, Gson jsonParser) {
+        JsonObject invoiceData = jsonParser.fromJson(jsonInvoice, JsonObject.class);
+        GenerarArchivoRequestDao generateFileRequest = new GenerarArchivoRequestDao(invoiceData.get("establecimientoEmpresa").getAsString(),
+                invoiceData.get("puntoEmisionEmpresa").getAsString(), invoiceData.get("facNumero").getAsInt() , invoiceData.get("rucEmpresa").getAsString(),
+                authorizationInfo.getOrDefault("rutaLogo",""), authorizationInfo.getOrDefault("rutaArchivo",""),
+                invoiceData.get("identificacionComprador").getAsString());
+
+        JsonObject jsonRequest = jsonParser.fromJson(jsonParser.toJson(generateFileRequest), JsonObject.class);
+        return jsonRequest;
     }
 
     @NotNull

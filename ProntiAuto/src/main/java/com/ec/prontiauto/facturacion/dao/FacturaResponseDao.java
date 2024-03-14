@@ -27,7 +27,17 @@ public class FacturaResponseDao extends AbstractResponseDao {
     private Timestamp fechaAutorizacion;
     private String mensajeRespuesta;
 
+    private String urlArchivo;
+
     public FacturaResponseDao() {
+    }
+
+    public String getUrlArchivo() {
+        return urlArchivo;
+    }
+
+    public void setUrlArchivo(String urlArchivo) {
+        this.urlArchivo = urlArchivo;
     }
 
     public String getItRuc() {

@@ -88,6 +88,9 @@ public class Factura extends AbstractEntities {
     @Column(name = "fecha_autorizacion")
     private Timestamp fechaAutorizacion;
 
+    @Column(name = "url_archivo")
+    private String urlArchivo;
+
     public Factura() {
     }
 
@@ -225,5 +228,13 @@ public class Factura extends AbstractEntities {
 
     public void setFechaAutorizacion(Timestamp fechaAutorizacion) {
         this.fechaAutorizacion = fechaAutorizacion;
+    }
+
+    public String getUrlArchivo() {
+        return urlArchivo;
+    }
+
+    public void setUrlArchivo(String urlArchivo) {
+        this.urlArchivo = urlArchivo;
     }
 }
